@@ -54,6 +54,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
   # drift_dev + build_runner : décommenter après flutter upgrade >=3.38.0
   # drift_dev: any
   # build_runner: ^2.4.0

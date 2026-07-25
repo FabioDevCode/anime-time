@@ -1,4 +1,4 @@
-# anime_time
+# anime-time
 
 A new Flutter project.
 
