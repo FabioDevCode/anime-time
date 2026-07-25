@@ -1,0 +1,4 @@
+{
+  "API_URL": "https://graphql.example.staging/graphql",
+  "ENV": "staging"
+}
