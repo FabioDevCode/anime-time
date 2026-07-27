@@ -1,4 +1,4 @@
-query RecentReleasingAnime($page: Int!, $perPage: Int!) {
+query RecentReleasingAnime($page: Int!, $perPage: Int!, $today: FuzzyDateInt!) {
   Page(page: $page, perPage: $perPage) {
     pageInfo {
       currentPage
@@ -6,7 +6,7 @@ query RecentReleasingAnime($page: Int!, $perPage: Int!) {
     }
     media(
       type: ANIME
-      status: RELEASING
+      startDate_lesser: $today
       sort: START_DATE_DESC
       isAdult: false
       format: TV

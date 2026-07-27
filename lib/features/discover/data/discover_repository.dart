@@ -23,10 +23,13 @@ class DiscoverRepository {
     required int page,
     required int perPage,
   }) async {
+    final now = DateTime.now();
+    final today = now.year * 10000 + now.month * 100 + now.day;
+
     final result = await _client.query(
       QueryOptions(
         document: recentReleasingAnimeQuery,
-        variables: {'page': page, 'perPage': perPage},
+        variables: {'page': page, 'perPage': perPage, 'today': today},
         fetchPolicy: FetchPolicy.networkOnly,
       ),
     );
