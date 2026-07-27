@@ -13,23 +13,23 @@ class FloatingNavBar extends StatelessWidget {
   static const _items = [
     _NavItem(
       icon: Icons.explore_outlined,
-      activeIcon: Icons.explore,
+      activeIcon: Icons.explore_outlined,
       label: 'Découvrir',
     ),
     _NavItem(
-      icon: Icons.search_outlined,
-      activeIcon: Icons.search,
-      label: 'Rechercher',
+      icon: Icons.hourglass_top_rounded,
+      activeIcon: Icons.hourglass_top_rounded,
+      label: 'Bientôt',
     ),
     _NavItem(
-      icon: Icons.bookmark_outline,
-      activeIcon: Icons.bookmark,
-      label: 'Favoris',
+      icon: Icons.calendar_month_outlined,
+      activeIcon: Icons.calendar_month_outlined,
+      label: 'Calendrier',
     ),
     _NavItem(
-      icon: Icons.settings_outlined,
-      activeIcon: Icons.settings,
-      label: 'Paramètres',
+      icon: Icons.person_outline,
+      activeIcon: Icons.person_outline,
+      label: 'Profil',
     ),
   ];
 
@@ -38,11 +38,11 @@ class FloatingNavBar extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
       child: Container(
         decoration: BoxDecoration(
           color: colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.3),
@@ -52,17 +52,19 @@ class FloatingNavBar extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(_items.length, (index) {
-                return _NavBarItem(
-                  item: _items[index],
-                  isActive: index == currentIndex,
-                  colorScheme: colorScheme,
-                  onTap: () => onTap(index),
+                return Expanded(
+                  child: _NavBarItem(
+                    item: _items[index],
+                    isActive: index == currentIndex,
+                    colorScheme: colorScheme,
+                    onTap: () => onTap(index),
+                  ),
                 );
               }),
             ),
@@ -95,10 +97,10 @@ class _NavBarItem extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: BorderRadius.circular(14),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -108,7 +110,7 @@ class _NavBarItem extends StatelessWidget {
                   isActive ? item.activeIcon : item.icon,
                   key: ValueKey(isActive),
                   color: color,
-                  size: 24,
+                  size: 20,
                 ),
               ),
               const SizedBox(height: 2),
@@ -116,7 +118,7 @@ class _NavBarItem extends StatelessWidget {
                 item.label,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: color,
-                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
