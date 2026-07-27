@@ -15,6 +15,7 @@ final recentReleasingAnimeQuery = gql(r'''
         type: ANIME
         status: RELEASING
         sort: START_DATE_DESC
+        isAdult: false
       ) {
         id
 
