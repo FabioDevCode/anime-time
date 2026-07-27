@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:anime_time/features/discover/providers/discover_providers.dart';
 import 'package:anime_time/features/discover/widgets/anime_grid.dart';
+import 'package:anime_time/features/discover/widgets/discover_action_bar.dart';
 
 class DiscoverScreen extends ConsumerStatefulWidget {
   const DiscoverScreen({super.key});
@@ -37,43 +38,63 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     final state = ref.watch(discoverNotifierProvider);
 
     if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const SafeArea(
+        bottom: false,
+        child: Center(child: CircularProgressIndicator()),
+      );
     }
 
     if (state.error != null && state.items.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.wifi_off_rounded,
-                size: 48,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Impossible de charger les anime',
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: () =>
-                    ref.read(discoverNotifierProvider.notifier).refresh(),
-                child: const Text('Réessayer'),
-              ),
-            ],
+      return SafeArea(
+        bottom: false,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.wifi_off_rounded,
+                  size: 48,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Impossible de charger les anime',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                FilledButton(
+                  onPressed: () =>
+                      ref.read(discoverNotifierProvider.notifier).refresh(),
+                  child: const Text('Réessayer'),
+                ),
+              ],
+            ),
           ),
         ),
       );
     }
 
-    return AnimeGrid(
-      items: state.items,
-      scrollController: _scrollController,
-      isLoadingMore: state.isLoadingMore,
+    return SafeArea(
+      bottom: false,
+      child: Stack(
+        children: [
+          AnimeGrid(
+            items: state.items,
+            scrollController: _scrollController,
+            isLoadingMore: state.isLoadingMore,
+            topPadding: kDiscoverActionBarHeight,
+          ),
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: DiscoverActionBar(),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -9,12 +9,14 @@ class AnimeGrid extends StatelessWidget {
     required this.scrollController,
     this.isLoadingMore = false,
     this.onAnimeTap,
+    this.topPadding = 0,
   });
 
   final List<AnimeMedia> items;
   final ScrollController scrollController;
   final bool isLoadingMore;
   final ValueChanged<AnimeMedia>? onAnimeTap;
+  final double topPadding;
 
   int _columnCount(double width) {
     if (width >= 900) return 6;
@@ -32,7 +34,7 @@ class AnimeGrid extends StatelessWidget {
 
         return GridView.builder(
           controller: scrollController,
-          padding: EdgeInsets.fromLTRB(8, 8, 8, bottomPadding),
+          padding: EdgeInsets.fromLTRB(8, topPadding + 8, 8, bottomPadding),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: columns,
             crossAxisSpacing: 4,
