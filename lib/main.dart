@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Anime Time',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.dark,
       routerConfig: appRouter,
     );
   }

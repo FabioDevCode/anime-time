@@ -1,0 +1,20 @@
+query RecentReleasingAnime($page: Int!, $perPage: Int!) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      currentPage
+      hasNextPage
+    }
+    media(type: ANIME, status: RELEASING, sort: START_DATE_DESC) {
+      id
+      status
+      coverImage {
+        large
+      }
+      title {
+        romaji
+        english
+        native
+      }
+    }
+  }
+}
