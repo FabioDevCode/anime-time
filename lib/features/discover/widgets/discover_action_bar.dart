@@ -1,5 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:anime_time/features/discover/providers/discover_providers.dart';
+import 'package:anime_time/features/discover/providers/discover_view_mode.dart';
 
 /// Hauteur totale de la barre d'actions (boutons + padding vertical).
 /// Utilisée par [DiscoverActionBar] et par le [padding] supérieur du GridView
@@ -12,12 +15,13 @@ const double kDiscoverActionBarHeight = 64.0;
 /// ```
 /// [ 🔍 Rechercher (expanded) ]  [ Filtre ]  [ Grid ]
 /// ```
-class DiscoverActionBar extends StatelessWidget {
+class DiscoverActionBar extends ConsumerWidget {
   const DiscoverActionBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final viewMode = ref.watch(discoverViewModeProvider);
 
     return ClipRect(
       child: BackdropFilter(
@@ -46,7 +50,14 @@ class DiscoverActionBar extends StatelessWidget {
                   onTap: () {},
                 ),
                 const SizedBox(width: 8),
-                SquareIconButton(icon: Icons.grid_view_outlined, onTap: () {}),
+                SquareIconButton(
+                  icon: viewMode == DiscoverViewMode.grid
+                      ? Icons.format_list_bulleted_outlined
+                      : Icons.grid_view_outlined,
+                  onTap: () {
+                    ref.read(discoverViewModeProvider.notifier).toggle();
+                  },
+                ),
               ],
             ),
           ),

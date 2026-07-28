@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:anime_time/features/discover/providers/discover_providers.dart';
+import 'package:anime_time/features/discover/providers/discover_view_mode.dart';
 import 'package:anime_time/features/discover/widgets/anime_grid.dart';
 import 'package:anime_time/features/discover/widgets/discover_action_bar.dart';
+import 'package:anime_time/features/discover/widgets/discover_list_view.dart';
 
 class DiscoverScreen extends ConsumerStatefulWidget {
   const DiscoverScreen({super.key});
@@ -77,16 +79,26 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
       );
     }
 
+    final viewMode = ref.watch(discoverViewModeProvider);
+
     return SafeArea(
       bottom: false,
       child: Stack(
         children: [
-          AnimeGrid(
-            items: state.items,
-            scrollController: _scrollController,
-            isLoadingMore: state.isLoadingMore,
-            topPadding: kDiscoverActionBarHeight,
-          ),
+          if (viewMode == DiscoverViewMode.grid)
+            AnimeGrid(
+              items: state.items,
+              scrollController: _scrollController,
+              isLoadingMore: state.isLoadingMore,
+              topPadding: kDiscoverActionBarHeight,
+            )
+          else
+            DiscoverListView(
+              items: state.items,
+              scrollController: _scrollController,
+              isLoadingMore: state.isLoadingMore,
+              topPadding: kDiscoverActionBarHeight,
+            ),
           const Positioned(
             top: 0,
             left: 0,

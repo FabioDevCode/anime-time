@@ -1,0 +1,1 @@
+enum DiscoverViewMode { grid, list }

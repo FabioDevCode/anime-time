@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:anime_time/core/graphql/graphql_client_provider.dart';
 import 'package:anime_time/features/discover/data/discover_repository.dart';
 import 'package:anime_time/features/discover/data/models/anime_media.dart';
+import 'package:anime_time/features/discover/providers/discover_view_mode.dart';
 
 final discoverRepositoryProvider = Provider<DiscoverRepository>((ref) {
   final client = ref.watch(graphqlClientProvider);
@@ -110,3 +111,21 @@ class DiscoverNotifier extends Notifier<DiscoverState> {
 
 final discoverNotifierProvider =
     NotifierProvider<DiscoverNotifier, DiscoverState>(DiscoverNotifier.new);
+
+// ---------------------------------------------------------------------------
+
+class DiscoverViewModeNotifier extends Notifier<DiscoverViewMode> {
+  @override
+  DiscoverViewMode build() => DiscoverViewMode.grid;
+
+  void toggle() {
+    state = state == DiscoverViewMode.grid
+        ? DiscoverViewMode.list
+        : DiscoverViewMode.grid;
+  }
+}
+
+final discoverViewModeProvider =
+    NotifierProvider<DiscoverViewModeNotifier, DiscoverViewMode>(
+      DiscoverViewModeNotifier.new,
+    );
