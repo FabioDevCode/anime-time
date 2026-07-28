@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors_extension.dart';
 
 class FloatingNavBar extends StatelessWidget {
   const FloatingNavBar({
@@ -90,17 +91,61 @@ class _NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive
-        ? colorScheme.primary
+    final appColors = context.appColors;
+    // Couleur du texte/icône : blanc si actif (sur fond bleu), sinon comportement inchangé
+    final contentColor = isActive
+        ? appColors.onBrandBackground
         : colorScheme.onSurface.withValues(alpha: 0.5);
+
+    // final color = isActive
+    //     ? colorScheme.primary
+    //     : colorScheme.onSurface.withValues(alpha: 0.5);
+
+    // return Material(
+    //   color: Colors.transparent,
+    //   child: InkWell(
+    //     borderRadius: BorderRadius.circular(14),
+    //     onTap: onTap,
+    //     child: Padding(
+    //       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+    //       child: Column(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           AnimatedSwitcher(
+    //             duration: const Duration(milliseconds: 200),
+    //             child: Icon(
+    //               isActive ? item.activeIcon : item.icon,
+    //               key: ValueKey(isActive),
+    //               color: contentColor,
+    //               size: 20,
+    //             ),
+    //           ),
+    //           const SizedBox(height: 2),
+    //           Text(
+    //             item.label,
+    //             style: Theme.of(context).textTheme.labelSmall?.copyWith(
+    //               color: contentColor,
+    //               fontWeight: FontWeight.w600,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
         onTap: onTap,
-        child: Padding(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          decoration: BoxDecoration(
+            color: isActive ? appColors.brandBackground : Colors.transparent,
+            borderRadius: BorderRadius.circular(14),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -109,7 +154,7 @@ class _NavBarItem extends StatelessWidget {
                 child: Icon(
                   isActive ? item.activeIcon : item.icon,
                   key: ValueKey(isActive),
-                  color: color,
+                  color: contentColor,
                   size: 20,
                 ),
               ),
@@ -117,7 +162,7 @@ class _NavBarItem extends StatelessWidget {
               Text(
                 item.label,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: color,
+                  color: contentColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
