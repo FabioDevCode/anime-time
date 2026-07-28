@@ -32,31 +32,40 @@ class AnimeGrid extends StatelessWidget {
       builder: (context, constraints) {
         final columns = _columnCount(constraints.maxWidth);
 
-        return GridView.builder(
+        return CustomScrollView(
           controller: scrollController,
-          padding: EdgeInsets.fromLTRB(8, topPadding + 8, 8, bottomPadding),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-            crossAxisSpacing: 4,
-            mainAxisSpacing: 4,
-            childAspectRatio: 2 / 3,
-          ),
-          itemCount: items.length + (isLoadingMore ? 1 : 0),
-          itemBuilder: (context, index) {
-            if (index == items.length) {
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: CircularProgressIndicator(),
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                8,
+                topPadding + 8,
+                8,
+                isLoadingMore ? 0 : bottomPadding,
+              ),
+              sliver: SliverGrid(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final anime = items[index];
+                  return AnimeCoverCard(
+                    anime: anime,
+                    onTap: onAnimeTap != null ? () => onAnimeTap!(anime) : null,
+                  );
+                }, childCount: items.length),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: columns,
+                  crossAxisSpacing: 4,
+                  mainAxisSpacing: 4,
+                  childAspectRatio: 2 / 3,
                 ),
-              );
-            }
-            final anime = items[index];
-            return AnimeCoverCard(
-              anime: anime,
-              onTap: onAnimeTap != null ? () => onAnimeTap!(anime) : null,
-            );
-          },
+              ),
+            ),
+            if (isLoadingMore)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 16, 0, bottomPadding),
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+              ),
+          ],
         );
       },
     );

@@ -15,6 +15,7 @@ final recentReleasingAnimeQuery = gql(r'''
         type: ANIME
         startDate_lesser: $today
         sort: START_DATE_DESC
+        status_in: [RELEASING, FINISHED]
         isAdult: false
         format: TV
       ) {

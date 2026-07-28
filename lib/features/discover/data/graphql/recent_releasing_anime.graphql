@@ -8,6 +8,7 @@ query RecentReleasingAnime($page: Int!, $perPage: Int!, $today: FuzzyDateInt!) {
       type: ANIME
       startDate_lesser: $today
       sort: START_DATE_DESC
+      status_in: [RELEASING, FINISHED]
       isAdult: false
       format: TV
     ) {
