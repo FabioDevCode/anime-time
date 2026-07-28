@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:anime_time/features/discover/data/models/anime_media.dart';
+import 'package:anime_time/features/discover/utils/anime_status.dart';
+import 'package:anime_time/features/discover/widgets/anime_status_badge.dart';
 
 class AnimeListItem extends StatelessWidget {
   const AnimeListItem({super.key, required this.anime, this.onTap});
@@ -62,6 +64,10 @@ class AnimeListItem extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                    ],
+                    if (anime.status.badgeData case final badge?) ...[
+                      const SizedBox(height: 6),
+                      AnimeStatusBadge(data: badge),
                     ],
                   ],
                 ),
