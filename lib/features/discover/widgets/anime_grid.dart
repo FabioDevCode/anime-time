@@ -10,6 +10,7 @@ class AnimeGrid extends StatelessWidget {
     this.isLoadingMore = false,
     this.onAnimeTap,
     this.topPadding = 0,
+    this.horizontalPadding = 8,
   });
 
   final List<AnimeMedia> items;
@@ -17,6 +18,7 @@ class AnimeGrid extends StatelessWidget {
   final bool isLoadingMore;
   final ValueChanged<AnimeMedia>? onAnimeTap;
   final double topPadding;
+  final double horizontalPadding;
 
   int _columnCount(double width) {
     if (width >= 900) return 6;
@@ -37,9 +39,9 @@ class AnimeGrid extends StatelessWidget {
           slivers: [
             SliverPadding(
               padding: EdgeInsets.fromLTRB(
-                8,
+                horizontalPadding,
                 topPadding + 8,
-                8,
+                horizontalPadding,
                 isLoadingMore ? 0 : bottomPadding,
               ),
               sliver: SliverGrid(

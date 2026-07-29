@@ -6,6 +6,8 @@ import 'package:anime_time/features/discover/widgets/anime_grid.dart';
 import 'package:anime_time/features/discover/widgets/discover_action_bar.dart';
 import 'package:anime_time/features/discover/widgets/discover_list_view.dart';
 
+const double kDiscoverHorizontalPadding = 0;
+
 class DiscoverScreen extends ConsumerStatefulWidget {
   const DiscoverScreen({super.key});
 
@@ -91,6 +93,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
               scrollController: _scrollController,
               isLoadingMore: state.isLoadingMore,
               topPadding: kDiscoverActionBarHeight,
+              horizontalPadding: kDiscoverHorizontalPadding,
             )
           else
             DiscoverListView(
@@ -98,12 +101,15 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
               scrollController: _scrollController,
               isLoadingMore: state.isLoadingMore,
               topPadding: kDiscoverActionBarHeight,
+              horizontalPadding: kDiscoverHorizontalPadding,
             ),
           const Positioned(
             top: 0,
             left: 0,
             right: 0,
-            child: DiscoverActionBar(),
+            child: DiscoverActionBar(
+              horizontalPadding: kDiscoverHorizontalPadding,
+            ),
           ),
         ],
       ),

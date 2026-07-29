@@ -4,10 +4,16 @@ import 'package:anime_time/features/discover/utils/anime_status.dart';
 import 'package:anime_time/features/discover/widgets/anime_status_badge.dart';
 
 class AnimeListItem extends StatelessWidget {
-  const AnimeListItem({super.key, required this.anime, this.onTap});
+  const AnimeListItem({
+    super.key,
+    required this.anime,
+    this.onTap,
+    this.horizontalPadding = 12,
+  });
 
   final AnimeMedia anime;
   final VoidCallback? onTap;
+  final double horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +25,15 @@ class AnimeListItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: 6,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(2),
                 child: SizedBox(
                   width: 56,
                   child: AspectRatio(

@@ -16,7 +16,9 @@ const double kDiscoverActionBarHeight = 64.0;
 /// [ 🔍 Rechercher (expanded) ]  [ Filtre ]  [ Grid ]
 /// ```
 class DiscoverActionBar extends ConsumerWidget {
-  const DiscoverActionBar({super.key});
+  const DiscoverActionBar({super.key, this.horizontalPadding = 16});
+
+  final double horizontalPadding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,26 +41,32 @@ class DiscoverActionBar extends ConsumerWidget {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Expanded(child: SearchButton()),
-                const SizedBox(width: 8),
-                SquareIconButton(
-                  icon: Icons.filter_list_outlined,
-                  onTap: () {},
-                ),
-                const SizedBox(width: 8),
-                SquareIconButton(
-                  icon: viewMode == DiscoverViewMode.grid
-                      ? Icons.format_list_bulleted_outlined
-                      : Icons.grid_view_outlined,
-                  onTap: () {
-                    ref.read(discoverViewModeProvider.notifier).toggle();
-                  },
-                ),
-              ],
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: 8,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Expanded(child: SearchButton()),
+                  const SizedBox(width: 8),
+                  SquareIconButton(
+                    icon: Icons.filter_list_outlined,
+                    onTap: () {},
+                  ),
+                  const SizedBox(width: 8),
+                  SquareIconButton(
+                    icon: viewMode == DiscoverViewMode.grid
+                        ? Icons.format_list_bulleted_outlined
+                        : Icons.grid_view_outlined,
+                    onTap: () {
+                      ref.read(discoverViewModeProvider.notifier).toggle();
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -80,10 +88,10 @@ class SearchButton extends StatelessWidget {
 
     return Material(
       color: colorScheme.surfaceContainer,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(40),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(40),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Row(
@@ -121,10 +129,10 @@ class SquareIconButton extends StatelessWidget {
 
     return Material(
       color: colorScheme.surfaceContainer,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(40),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(40),
         child: SizedBox.square(
           dimension: 48,
           child: Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),

@@ -12,7 +12,7 @@ class AnimeCoverCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(4),
       child: Material(
         color: colorScheme.surfaceContainerHighest,
         child: InkWell(

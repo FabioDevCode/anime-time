@@ -39,11 +39,11 @@ class FloatingNavBar extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Container(
         decoration: BoxDecoration(
           color: colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(40),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.3),
@@ -53,7 +53,7 @@ class FloatingNavBar extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(40),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Row(
@@ -97,54 +97,17 @@ class _NavBarItem extends StatelessWidget {
         ? appColors.onBrandBackground
         : colorScheme.onSurface.withValues(alpha: 0.5);
 
-    // final color = isActive
-    //     ? colorScheme.primary
-    //     : colorScheme.onSurface.withValues(alpha: 0.5);
-
-    // return Material(
-    //   color: Colors.transparent,
-    //   child: InkWell(
-    //     borderRadius: BorderRadius.circular(14),
-    //     onTap: onTap,
-    //     child: Padding(
-    //       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-    //       child: Column(
-    //         mainAxisSize: MainAxisSize.min,
-    //         children: [
-    //           AnimatedSwitcher(
-    //             duration: const Duration(milliseconds: 200),
-    //             child: Icon(
-    //               isActive ? item.activeIcon : item.icon,
-    //               key: ValueKey(isActive),
-    //               color: contentColor,
-    //               size: 20,
-    //             ),
-    //           ),
-    //           const SizedBox(height: 2),
-    //           Text(
-    //             item.label,
-    //             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-    //               color: contentColor,
-    //               fontWeight: FontWeight.w600,
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(40),
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           decoration: BoxDecoration(
             color: isActive ? appColors.brandBackground : Colors.transparent,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(40),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
