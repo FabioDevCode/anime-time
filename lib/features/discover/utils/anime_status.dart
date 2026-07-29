@@ -32,10 +32,21 @@ extension AnimeStatusExtension on String {
       backgroundColor: Color(0x22909090),
       textColor: Color(0xFF9E9E9E),
     ),
-    // Futurs statuts :
-    // 'NOT_YET_RELEASED': AnimeStatusBadgeData(label: 'À venir', ...),
-    // 'HIATUS': AnimeStatusBadgeData(label: 'Pause', ...),
-    // 'CANCELLED': AnimeStatusBadgeData(label: 'Annulé', ...),
+    'NOT_YET_RELEASED': AnimeStatusBadgeData(
+      label: 'À venir',
+      backgroundColor: Color(0x2242A5F5),
+      textColor: Color(0xFF90CAF9),
+    ),
+    'HIATUS': AnimeStatusBadgeData(
+      label: 'En pause',
+      backgroundColor: Color(0x22FFB74D),
+      textColor: Color(0xFFFFCC80),
+    ),
+    'CANCELLED': AnimeStatusBadgeData(
+      label: 'Annulée',
+      backgroundColor: Color(0x22EF5350),
+      textColor: Color(0xFFEF9A9A),
+    ),
   };
 
   AnimeStatusBadgeData? get badgeData => _statusMap[this];

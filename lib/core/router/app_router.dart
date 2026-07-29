@@ -1,11 +1,16 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:anime_time/common/widgets/app_shell.dart';
+import 'package:anime_time/features/anime_detail/routes/anime_detail_route.dart';
 import 'package:anime_time/features/discover/presentation/screens/discover_screen.dart';
 import 'package:anime_time/features/favorites/presentation/screens/favorites_screen.dart';
 import 'package:anime_time/features/search/presentation/screens/search_screen.dart';
 import 'package:anime_time/features/settings/presentation/screens/settings_screen.dart';
 
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final appRouter = GoRouter(
+  navigatorKey: _rootNavigatorKey,
   debugLogDiagnostics: true,
   initialLocation: '/discover',
   routes: [
@@ -46,6 +51,10 @@ final appRouter = GoRouter(
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: AnimeDetailRoute.path,
+      pageBuilder: (context, state) => AnimeDetailRoute.buildPage(state),
     ),
   ],
 );

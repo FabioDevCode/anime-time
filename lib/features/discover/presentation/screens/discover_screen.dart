@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:anime_time/features/anime_detail/routes/anime_detail_route.dart';
+import 'package:anime_time/features/discover/data/models/anime_media.dart';
 import 'package:anime_time/features/discover/providers/discover_providers.dart';
 import 'package:anime_time/features/discover/providers/discover_view_mode.dart';
 import 'package:anime_time/features/discover/widgets/anime_grid.dart';
@@ -35,6 +38,10 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     if (position.pixels >= position.maxScrollExtent - 200) {
       ref.read(discoverNotifierProvider.notifier).loadNextPage();
     }
+  }
+
+  void _openAnimeDetail(AnimeMedia anime) {
+    context.push(AnimeDetailRoute.location(anime.id));
   }
 
   @override
@@ -94,6 +101,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
               isLoadingMore: state.isLoadingMore,
               topPadding: kDiscoverActionBarHeight,
               horizontalPadding: kDiscoverHorizontalPadding,
+              onAnimeTap: _openAnimeDetail,
             )
           else
             DiscoverListView(
@@ -102,6 +110,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
               isLoadingMore: state.isLoadingMore,
               topPadding: kDiscoverActionBarHeight,
               horizontalPadding: kDiscoverHorizontalPadding,
+              onAnimeTap: _openAnimeDetail,
             ),
           const Positioned(
             top: 0,

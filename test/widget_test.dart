@@ -1,30 +1,36 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:anime_time/main.dart';
+import 'package:anime_time/features/anime_detail/data/models/anime_detail.dart';
+import 'package:anime_time/features/anime_detail/utils/html_text.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('AnimeDetail maps the AniList detail response', () {
+    final anime = AnimeDetail.fromJson({
+      'id': 16498,
+      'idMal': 1535,
+      'title': {'romaji': 'Shingeki no Kyojin', 'native': '進撃の巨人'},
+      'description': '<i>Synopsis</i>',
+      'coverImage': {'large': 'https://example.com/cover.jpg'},
+      'bannerImage': 'https://example.com/banner.jpg',
+      'episodes': 25,
+      'duration': 24,
+      'status': 'RELEASING',
+      'season': 'FALL',
+      'seasonYear': 2023,
+      'averageScore': 92,
+      'genres': ['Action', 'Drama'],
+      'nextAiringEpisode': {'episode': 12, 'airingAt': 1700000000},
+    });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(anime.id, 16498);
+    expect(anime.titleRomaji, 'Shingeki no Kyojin');
+    expect(anime.genres, ['Action', 'Drama']);
+    expect(anime.nextAiringEpisode?.episode, 12);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('stripHtml preserves AniList line breaks and removes tags', () {
+    expect(
+      stripHtml('<p>Premier <i>paragraphe</i>.</p><br>Second &amp; final.'),
+      'Premier paragraphe.\n\nSecond & final.',
+    );
   });
 }
