@@ -145,7 +145,7 @@ class _DetailBackButton extends StatelessWidget {
       left: 16,
       child: IconButton(
         onPressed: context.pop,
-        icon: const Icon(Icons.chevron_left_rounded, size: 34),
+        icon: const Icon(Icons.arrow_back, size: 20),
         tooltip: 'Retour',
         style: IconButton.styleFrom(
           backgroundColor: colorScheme.surfaceContainerHigh.withValues(

@@ -8,6 +8,7 @@ final animeDetailsQuery = gql(r'''
       idMal
       title {
         romaji
+        english
         native
       }
       description

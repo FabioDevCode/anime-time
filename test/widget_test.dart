@@ -7,7 +7,11 @@ void main() {
     final anime = AnimeDetail.fromJson({
       'id': 16498,
       'idMal': 1535,
-      'title': {'romaji': 'Shingeki no Kyojin', 'native': '進撃の巨人'},
+      'title': {
+        'romaji': 'Shingeki no Kyojin',
+        'english': 'Attack on Titan',
+        'native': '進撃の巨人',
+      },
       'description': '<i>Synopsis</i>',
       'coverImage': {'large': 'https://example.com/cover.jpg'},
       'bannerImage': 'https://example.com/banner.jpg',
@@ -23,6 +27,7 @@ void main() {
 
     expect(anime.id, 16498);
     expect(anime.titleRomaji, 'Shingeki no Kyojin');
+    expect(anime.titleEnglish, 'Attack on Titan');
     expect(anime.genres, ['Action', 'Drama']);
     expect(anime.nextAiringEpisode?.episode, 12);
   });

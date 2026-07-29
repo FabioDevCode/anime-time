@@ -4,6 +4,7 @@ query AnimeDetails($id: Int) {
     idMal
     title {
       romaji
+      english
       native
     }
     description

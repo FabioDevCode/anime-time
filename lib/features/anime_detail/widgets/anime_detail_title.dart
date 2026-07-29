@@ -11,29 +11,25 @@ class AnimeDetailTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final romaji =
-        anime.titleRomaji ?? anime.titleNative ?? 'Titre indisponible';
+    final english = anime.titleEnglish;
+    final native = anime.titleNative;
+    final secondaryTitleStyle = theme.textTheme.bodyMedium?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          romaji,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            height: 1.12,
-          ),
-        ),
-        if (anime.titleNative != null && anime.titleNative != romaji) ...[
-          const SizedBox(height: 4),
+        if (english != null)
           Text(
-            anime.titleNative!,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+            english,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: secondaryTitleStyle,
           ),
+        if (native != null && native != english) ...[
+          if (english != null) const SizedBox(height: 4),
+          Text(native, style: secondaryTitleStyle),
         ],
         if (anime.status.badgeData case final badge?) ...[
           const SizedBox(height: 10),

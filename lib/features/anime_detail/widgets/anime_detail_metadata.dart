@@ -33,7 +33,7 @@ class AnimeDetailMetadata extends StatelessWidget {
     if (seasonName != null || anime.seasonYear != null) {
       labels.add([seasonName, anime.seasonYear?.toString()].nonNulls.join(' '));
     }
-    if (anime.averageScore != null) labels.add('⭐ ${anime.averageScore} %');
+    if (anime.averageScore != null) labels.add('★ ${anime.averageScore} %');
 
     if (labels.isEmpty) return const SizedBox.shrink();
 

@@ -5,6 +5,7 @@ class AnimeDetail {
     required this.genres,
     this.idMal,
     this.titleRomaji,
+    this.titleEnglish,
     this.titleNative,
     this.description,
     this.coverImageLarge,
@@ -20,6 +21,7 @@ class AnimeDetail {
   final int id;
   final int? idMal;
   final String? titleRomaji;
+  final String? titleEnglish;
   final String? titleNative;
   final String? description;
   final String? coverImageLarge;
@@ -43,6 +45,7 @@ class AnimeDetail {
       id: json['id'] as int,
       idMal: json['idMal'] as int?,
       titleRomaji: title?['romaji'] as String?,
+      titleEnglish: title?['english'] as String?,
       titleNative: title?['native'] as String?,
       description: json['description'] as String?,
       coverImageLarge: coverImage?['large'] as String?,
