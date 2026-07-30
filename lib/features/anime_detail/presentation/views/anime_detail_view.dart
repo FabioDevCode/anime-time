@@ -92,6 +92,14 @@ class _AnimeDetailContent extends StatelessWidget {
                         }).toList(),
                       ),
                     ],
+                    if (anime.status == 'RELEASING' &&
+                        anime.nextAiringEpisode != null) ...[
+                      const SizedBox(height: 8),
+                      AnimeDetailAiringCard(
+                        nextEpisode: anime.nextAiringEpisode!,
+                      ),
+                      const SizedBox(height: 8),
+                    ],
                     const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
@@ -113,13 +121,6 @@ class _AnimeDetailContent extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (anime.status == 'RELEASING' &&
-                        anime.nextAiringEpisode != null) ...[
-                      const SizedBox(height: 16),
-                      AnimeDetailAiringCard(
-                        nextEpisode: anime.nextAiringEpisode!,
-                      ),
-                    ],
                     const SizedBox(height: 16),
                     AnimeDetailSynopsisCard(description: anime.description),
                   ],
