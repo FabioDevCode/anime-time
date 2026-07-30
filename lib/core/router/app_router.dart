@@ -1,56 +1,36 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:anime_time/common/widgets/app_shell.dart';
+import 'package:anime_time/core/router/app_tab.dart';
 import 'package:anime_time/features/anime_detail/routes/anime_detail_route.dart';
+import 'package:anime_time/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:anime_time/features/discover/presentation/screens/discover_screen.dart';
-import 'package:anime_time/features/favorites/presentation/screens/favorites_screen.dart';
-import 'package:anime_time/features/search/presentation/screens/search_screen.dart';
-import 'package:anime_time/features/settings/presentation/screens/settings_screen.dart';
+import 'package:anime_time/features/profile/presentation/screens/profile_screen.dart';
+import 'package:anime_time/features/soon/presentation/screens/soon_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   debugLogDiagnostics: true,
-  initialLocation: '/discover',
+  initialLocation: AppTab.discover.path,
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
           AppShell(navigationShell: navigationShell),
-      branches: [
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/discover',
-              builder: (context, state) => const DiscoverScreen(),
+      branches: AppTab.values
+          .map(
+            (tab) => StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  name: tab.routeName,
+                  path: tab.path,
+                  builder: (context, state) => _buildTabScreen(tab),
+                ),
+              ],
             ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/search',
-              builder: (context, state) => const SearchScreen(),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/favorites',
-              builder: (context, state) => const FavoritesScreen(),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/settings',
-              builder: (context, state) => const SettingsScreen(),
-            ),
-          ],
-        ),
-      ],
+          )
+          .toList(),
     ),
     GoRoute(
       path: AnimeDetailRoute.path,
@@ -58,3 +38,10 @@ final appRouter = GoRouter(
     ),
   ],
 );
+
+Widget _buildTabScreen(AppTab tab) => switch (tab) {
+  AppTab.discover => const DiscoverScreen(),
+  AppTab.soon => const SoonScreen(),
+  AppTab.calendar => const CalendarScreen(),
+  AppTab.profile => const ProfileScreen(),
+};

@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors_extension.dart';
+import 'package:anime_time/core/router/app_tab.dart';
+import 'package:anime_time/core/theme/app_colors_extension.dart';
 
 class FloatingNavBar extends StatelessWidget {
   const FloatingNavBar({
     super.key,
-    required this.currentIndex,
+    required this.currentTab,
     required this.onTap,
   });
 
-  final int currentIndex;
-  final ValueChanged<int> onTap;
+  final AppTab currentTab;
+  final ValueChanged<AppTab> onTap;
 
   static const _items = [
     _NavItem(
+      tab: AppTab.discover,
       icon: Icons.explore_outlined,
       activeIcon: Icons.explore_outlined,
       label: 'Découvrir',
     ),
     _NavItem(
+      tab: AppTab.soon,
       icon: Icons.hourglass_top_rounded,
       activeIcon: Icons.hourglass_top_rounded,
       label: 'Bientôt',
     ),
     _NavItem(
+      tab: AppTab.calendar,
       icon: Icons.calendar_month_outlined,
       activeIcon: Icons.calendar_month_outlined,
       label: 'Calendrier',
     ),
     _NavItem(
+      tab: AppTab.profile,
       icon: Icons.person_outline,
       activeIcon: Icons.person_outline,
       label: 'Profil',
@@ -58,16 +63,16 @@ class FloatingNavBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(_items.length, (index) {
+              children: _items.map((item) {
                 return Expanded(
                   child: _NavBarItem(
-                    item: _items[index],
-                    isActive: index == currentIndex,
+                    item: item,
+                    isActive: item.tab == currentTab,
                     colorScheme: colorScheme,
-                    onTap: () => onTap(index),
+                    onTap: () => onTap(item.tab),
                   ),
                 );
-              }),
+              }).toList(),
             ),
           ),
         ),
@@ -139,11 +144,13 @@ class _NavBarItem extends StatelessWidget {
 
 class _NavItem {
   const _NavItem({
+    required this.tab,
     required this.icon,
     required this.activeIcon,
     required this.label,
   });
 
+  final AppTab tab;
   final IconData icon;
   final IconData activeIcon;
   final String label;
