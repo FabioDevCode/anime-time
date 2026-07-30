@@ -6,6 +6,8 @@ class AnimeMedia {
     this.titleRomaji,
     this.titleEnglish,
     this.titleNative,
+    this.season,
+    this.seasonYear,
   });
 
   final int id;
@@ -14,6 +16,8 @@ class AnimeMedia {
   final String? titleRomaji;
   final String? titleEnglish;
   final String? titleNative;
+  final String? season;
+  final int? seasonYear;
 
   factory AnimeMedia.fromJson(Map<String, dynamic> json) {
     return AnimeMedia(
@@ -23,6 +27,8 @@ class AnimeMedia {
       titleRomaji: json['title']?['romaji'] as String?,
       titleEnglish: json['title']?['english'] as String?,
       titleNative: json['title']?['native'] as String?,
+      season: json['season'] as String?,
+      seasonYear: json['seasonYear'] as int?,
     );
   }
 }

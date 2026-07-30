@@ -1,4 +1,4 @@
-query SoonAnime($page: Int!, $perPage: Int!) {
+query SoonAnime($page: Int!, $perPage: Int!, $seasonYear: Int) {
   Page(page: $page, perPage: $perPage) {
     pageInfo {
       currentPage
@@ -9,12 +9,15 @@ query SoonAnime($page: Int!, $perPage: Int!) {
       type: ANIME
       format: TV
       status: NOT_YET_RELEASED
+      seasonYear: $seasonYear
       sort: START_DATE
       isAdult: false
     ) {
       id
 
       status
+      season
+      seasonYear
 
       coverImage {
         large
