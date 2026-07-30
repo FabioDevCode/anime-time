@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:anime_time/common/utils/anime_status.dart';
+import 'package:anime_time/common/widgets/anime_catalog/anime_status_badge.dart';
 import 'package:anime_time/features/anime_detail/data/models/anime_detail.dart';
-import 'package:anime_time/features/discover/utils/anime_status.dart';
-import 'package:anime_time/features/discover/widgets/anime_status_badge.dart';
 
 class AnimeDetailTitle extends StatelessWidget {
   const AnimeDetailTitle({super.key, required this.anime});

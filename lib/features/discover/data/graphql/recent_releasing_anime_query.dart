@@ -10,7 +10,6 @@ final recentReleasingAnimeQuery = gql(r'''
         currentPage
         hasNextPage
       }
-
       media(
         type: ANIME
         startDate_lesser: $today
@@ -20,13 +19,10 @@ final recentReleasingAnimeQuery = gql(r'''
         format: TV
       ) {
         id
-
         status
-
         coverImage {
           large
         }
-
         title {
           romaji
           english

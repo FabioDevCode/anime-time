@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:anime_time/features/discover/data/models/anime_media.dart';
+import 'package:anime_time/common/models/anime_media.dart';
 
 class AnimeCoverCard extends StatelessWidget {
   const AnimeCoverCard({super.key, required this.anime, this.onTap});

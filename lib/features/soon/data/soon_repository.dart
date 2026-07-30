@@ -1,10 +1,10 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:anime_time/common/catalog/data/anime_catalog_repository.dart';
 import 'package:anime_time/common/models/anime_media.dart';
-import 'package:anime_time/features/discover/data/graphql/recent_releasing_anime_query.dart';
+import 'package:anime_time/features/soon/data/graphql/soon_anime_query.dart';
 
-class DiscoverRepository implements AnimeCatalogRepository {
-  const DiscoverRepository(this._client);
+class SoonRepository implements AnimeCatalogRepository {
+  const SoonRepository(this._client);
 
   final GraphQLClient _client;
 
@@ -13,13 +13,10 @@ class DiscoverRepository implements AnimeCatalogRepository {
     required int page,
     required int perPage,
   }) async {
-    final now = DateTime.now();
-    final today = now.year * 10000 + now.month * 100 + now.day;
-
     final result = await _client.query(
       QueryOptions(
-        document: recentReleasingAnimeQuery,
-        variables: {'page': page, 'perPage': perPage, 'today': today},
+        document: soonAnimeQuery,
+        variables: {'page': page, 'perPage': perPage},
         fetchPolicy: FetchPolicy.networkOnly,
       ),
     );

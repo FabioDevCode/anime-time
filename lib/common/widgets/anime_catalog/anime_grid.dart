@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:anime_time/features/discover/data/models/anime_media.dart';
-import 'package:anime_time/features/discover/widgets/anime_cover_card.dart';
+import 'package:anime_time/common/models/anime_media.dart';
+import 'package:anime_time/common/widgets/anime_catalog/anime_cover_card.dart';
 
 class AnimeGrid extends StatelessWidget {
   const AnimeGrid({

@@ -1,35 +1,46 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:anime_time/features/discover/providers/discover_providers.dart';
-import 'package:anime_time/features/discover/providers/discover_view_mode.dart';
+import 'package:anime_time/common/catalog/providers/catalog_view_mode.dart';
 
 /// Hauteur totale de la barre d'actions (boutons + padding vertical).
-/// Utilisée par [DiscoverActionBar] et par le [padding] supérieur du GridView
+/// Utilisée par [CatalogActionBar] et par le [padding] supérieur du GridView
 /// pour que les premières affiches ne soient jamais masquées.
-const double kDiscoverActionBarHeight = 64.0;
+const double kCatalogActionBarHeight = 64.0;
 
-/// Barre d'actions fixe affichée en haut de la page Découvrir.
+/// Barre d'actions fixe affichée en haut des catalogues d'anime.
 ///
-/// Composition :
+/// La composition est configurable pour permettre à chaque catalogue de
+/// n'exposer que les actions qui lui sont utiles.
+///
+/// Composition par défaut :
 /// ```
 /// [ 🔍 Rechercher (expanded) ]  [ Filtre ]  [ Grid ]
 /// ```
-class DiscoverActionBar extends ConsumerWidget {
-  const DiscoverActionBar({super.key, this.horizontalPadding = 16});
+class CatalogActionBar extends StatelessWidget {
+  const CatalogActionBar({
+    super.key,
+    required this.viewMode,
+    required this.onToggleViewMode,
+    this.horizontalPadding = 16,
+    this.showSearch = true,
+    this.showFilter = true,
+  });
 
+  final CatalogViewMode viewMode;
+  final VoidCallback onToggleViewMode;
   final double horizontalPadding;
+  final bool showSearch;
+  final bool showFilter;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final viewMode = ref.watch(discoverViewModeProvider);
 
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
         child: Container(
-          height: kDiscoverActionBarHeight,
+          height: kCatalogActionBarHeight,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -50,20 +61,20 @@ class DiscoverActionBar extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Expanded(child: SearchButton()),
-                  const SizedBox(width: 8),
+                  if (showSearch) const Expanded(child: SearchButton()),
+                  if (showSearch && showFilter) const SizedBox(width: 8),
+                  if (showFilter)
+                    SquareIconButton(
+                      icon: Icons.filter_list_outlined,
+                      onTap: () {},
+                    ),
+                  if (showSearch || showFilter) const SizedBox(width: 8),
+                  if (!showSearch && !showFilter) const Spacer(),
                   SquareIconButton(
-                    icon: Icons.filter_list_outlined,
-                    onTap: () {},
-                  ),
-                  const SizedBox(width: 8),
-                  SquareIconButton(
-                    icon: viewMode == DiscoverViewMode.grid
+                    icon: viewMode == CatalogViewMode.grid
                         ? Icons.format_list_bulleted_outlined
                         : Icons.grid_view_outlined,
-                    onTap: () {
-                      ref.read(discoverViewModeProvider.notifier).toggle();
-                    },
+                    onTap: onToggleViewMode,
                   ),
                 ],
               ),

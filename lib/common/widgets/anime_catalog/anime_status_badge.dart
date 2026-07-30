@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:anime_time/features/discover/utils/anime_status.dart';
+import 'package:anime_time/common/utils/anime_status.dart';
 
 /// Badge pill affichant le statut d'un anime.
 ///
