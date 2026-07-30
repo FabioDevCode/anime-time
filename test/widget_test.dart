@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:anime_time/features/anime_detail/data/models/anime_detail.dart';
 import 'package:anime_time/features/anime_detail/utils/html_text.dart';
+import 'package:anime_time/features/anime_detail/widgets/anime_detail_synopsis_card.dart';
 
 void main() {
   test('AnimeDetail maps the AniList detail response', () {
@@ -37,5 +39,25 @@ void main() {
       stripHtml('<p>Premier <i>paragraphe</i>.</p><br>Second &amp; final.'),
       'Premier paragraphe.\n\nSecond & final.',
     );
+  });
+
+  testWidgets('Synopsis card fills the available width for short text', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 320,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [AnimeDetailSynopsisCard(description: 'Court')],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.getSize(find.byType(Card)).width, 320);
   });
 }

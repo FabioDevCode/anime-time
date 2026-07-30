@@ -11,26 +11,29 @@ class AnimeDetailSynopsisCard extends StatelessWidget {
     final synopsis = description == null ? '' : stripHtml(description!);
     final theme = Theme.of(context);
 
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Synopsis',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Synopsis',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              synopsis.isEmpty ? 'Aucun synopsis disponible.' : synopsis,
-              textAlign: TextAlign.left,
-              style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
-            ),
-          ],
+              const SizedBox(height: 10),
+              Text(
+                synopsis.isEmpty ? 'Aucun synopsis disponible.' : synopsis,
+                textAlign: TextAlign.left,
+                style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+              ),
+            ],
+          ),
         ),
       ),
     );
