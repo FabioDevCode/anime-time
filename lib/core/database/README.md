@@ -1,20 +1,15 @@
 # Drift (base de données locale)
 
-Ce dossier accueillera la configuration de drift (AppDatabase, tables, DAOs).
+La configuration Drift est centralisée ici :
 
-## Prérequis pour activer drift
+- `database.dart` : point d'entrée et ouverture SQLite native de la base locale ;
+- `tables/favorite_anime_table.dart` : schéma des anime favoris ;
+- `accessors/favorite_anime_accessor.dart` : point d'extension `DatabaseAccessor`, sans logique métier pour l'instant.
 
-drift nécessite Dart >=3.10.0 (Flutter >=3.38.0).
+Pour régénérer le code après une modification du schéma :
 
-Pour activer :
-1. Lancer `flutter upgrade` pour obtenir Flutter 3.38.0+
-2. Décommenter dans `pubspec.yaml` :
-   ```yaml
-   drift: ^2.34.2
-   sqlite3_flutter_libs: ^0.5.0
-   drift_dev: any
-   build_runner: ^2.4.0
-   ```
-3. Lancer `flutter pub get`
-4. Créer `lib/core/database/app_database.dart` avec les tables
-5. Lancer `dart run build_runner build`
+```bash
+dart run build_runner build
+```
+
+`database.g.dart` est généré et doit être conservé dans le projet.

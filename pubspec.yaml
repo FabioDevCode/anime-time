@@ -37,11 +37,15 @@ dependencies:
   # Pinner sur 5.2.1 qui dépend de connectivity_plus ^6.1.3 — stable
   graphql_flutter: 5.2.1
 
-  # Base de données locale (drift)
-  # ⚠️  drift + drift_dev + build_runner ne sont compatibles qu'avec Dart >=3.10.0.
-  # À ajouter après `flutter upgrade` vers Flutter >=3.38.0 :
-  #   drift: ^2.34.2
-  #   sqlite3_flutter_libs: ^0.5.0
+  # Base de données locale
+  # Cette série reste compatible avec l'ensemble des dépendances actuelles.
+  drift: 2.29.0
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  sqlite3: 2.9.4
+  # Demandé pour fournir les bibliothèques SQLite natives avec Dart 3.9.
+  # (La version 0.6 nécessite Dart 3.10.)
+  sqlite3_flutter_libs: 0.5.42
 
   # Stockage simple (préférences, thème, onboarding)
   shared_preferences: ^2.5.5
@@ -55,9 +59,9 @@ dev_dependencies:
 
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.4
-  # drift_dev + build_runner : décommenter après flutter upgrade >=3.38.0
-  # drift_dev: any
-  # build_runner: ^2.4.0
+  drift_dev: 2.29.0
+  # Cette version utilise build 3, compatible avec Drift 2.29 et Flutter 3.35.
+  build_runner: 2.6.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
