@@ -20,7 +20,7 @@ class FavoriteAnimeButton extends StatelessWidget {
   static const _removeButtonSize = 52.0;
   static const _buttonGap = 10.0;
   static const _animationDuration = Duration(milliseconds: 250);
-  static const _removeButtonColor = Color(0xFF8E2C2C);
+  static const _removeButtonColor = Color.fromARGB(255, 202, 32, 32);
   static const _favoriteColor = Color(0xFF3FAE68);
 
   final bool isFavorite;
@@ -148,14 +148,23 @@ class FavoriteAnimeButton extends StatelessWidget {
       context: context,
       builder: (dialogContext) {
         final colorScheme = Theme.of(dialogContext).colorScheme;
+        final screenWidth = MediaQuery.of(dialogContext).size.width;
 
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(48),
+          ),
           insetPadding: const EdgeInsets.symmetric(
             horizontal: 16,
-            vertical: 24,
+            vertical: 16,
           ),
-          title: const Text('Retirer des favoris ?'),
-          content: const Text('Cet anime sera retiré de vos favoris.'),
+          title: const Text('Retirer des favoris'),
+          content: SizedBox(
+            width: screenWidth * 0.75,
+            child: const Text(
+              'Êtes-vous sûr(e) de vouloir supprimer cet anime de vos favoris ?',
+            ),
+          ),
           actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           actions: [
             SizedBox(
@@ -168,15 +177,17 @@ class FavoriteAnimeButton extends StatelessWidget {
                     style: FilledButton.styleFrom(
                       backgroundColor: _removeButtonColor,
                       foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: const Text('Retirer des favoris'),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
                   OutlinedButton(
                     onPressed: () => Navigator.of(dialogContext).pop(false),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: colorScheme.onSurfaceVariant,
                       side: BorderSide(color: colorScheme.outline),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: const Text('Annuler'),
                   ),
