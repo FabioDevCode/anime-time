@@ -1,16 +1,9 @@
-# anime-time
+  <img src="assets/icon/icon.png" alt="Puna Logo" width="150" />
 
-A new Flutter project.
+# Anime Time
 
-## Getting Started
+Application mobile pour traquer les animes.
 
-This project is a starting point for a Flutter application.
+## Licence
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Ce projet est distribué sous licence [PolyForm Noncommercial 1.0.0](LICENSE.md) - usage non commercial uniquement.
