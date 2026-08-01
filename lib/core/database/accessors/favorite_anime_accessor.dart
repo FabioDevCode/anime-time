@@ -14,6 +14,9 @@ class FavoriteAnimeAccessor extends DatabaseAccessor<AppDatabase>
     return anime != null;
   }
 
+  /// Observe l'ensemble des favoris afin de mettre à jour les vues locales.
+  Stream<List<FavoriteAnimeData>> watchAll() => select(favoriteAnime).watch();
+
   Future<void> upsert(FavoriteAnimeCompanion anime) async {
     await into(favoriteAnime).insertOnConflictUpdate(anime);
   }
