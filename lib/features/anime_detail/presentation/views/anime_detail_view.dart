@@ -1,7 +1,7 @@
-import 'package:anime_time/core/theme/app_colors_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:anime_time/features/anime_detail/data/mappers/anime_detail_to_favorite_anime_draft.dart';
 import 'package:anime_time/features/anime_detail/data/models/anime_detail.dart';
 import 'package:anime_time/features/anime_detail/providers/anime_detail_providers.dart';
 import 'package:anime_time/features/anime_detail/widgets/anime_detail_airing_card.dart';
@@ -9,6 +9,8 @@ import 'package:anime_time/features/anime_detail/widgets/anime_detail_banner.dar
 import 'package:anime_time/features/anime_detail/widgets/anime_detail_metadata.dart';
 import 'package:anime_time/features/anime_detail/widgets/anime_detail_synopsis_card.dart';
 import 'package:anime_time/features/anime_detail/widgets/anime_detail_title.dart';
+import 'package:anime_time/features/favorites/presentation/widgets/favorite_anime_button.dart';
+import 'package:anime_time/features/favorites/providers/favorite_anime_providers.dart';
 
 class AnimeDetailView extends ConsumerWidget {
   const AnimeDetailView({super.key, required this.animeId});
@@ -18,17 +20,38 @@ class AnimeDetailView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final animeDetail = ref.watch(animeDetailProvider(animeId));
+    // Ces deux providers sont observés dès le premier build : les requêtes
+    // GraphQL et Drift démarrent donc en parallèle.
+    final favoriteAnime = ref.watch(favoriteAnimeControllerProvider(animeId));
 
     return Scaffold(
       body: Stack(
         children: [
           Positioned.fill(
             child: animeDetail.when(
-              data: (anime) => _AnimeDetailContent(anime: anime),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, _) => _DetailError(
-                onRetry: () => ref.invalidate(animeDetailProvider(animeId)),
+              data: (anime) => favoriteAnime.when(
+                data: (favoriteState) => _AnimeDetailContent(
+                  anime: anime,
+                  favoriteState: favoriteState,
+                  onAdd: () => _addToFavorites(ref, anime),
+                  onRemove: () => _removeFromFavorites(ref, anime),
+                ),
+                loading: () => _AnimeDetailContent(
+                  anime: anime,
+                  isFavoriteLoading: true,
+                  onAdd: () => _addToFavorites(ref, anime),
+                  onRemove: () => _removeFromFavorites(ref, anime),
+                ),
+                error: (error, _) => _AnimeDetailContent(
+                  anime: anime,
+                  onAdd: () => _addToFavorites(ref, anime),
+                  onRemove: () => _removeFromFavorites(ref, anime),
+                  onRetryFavorite: () =>
+                      ref.invalidate(favoriteAnimeControllerProvider(animeId)),
+                ),
               ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, _) => _DetailError(onRetry: () => _retry(ref)),
             ),
           ),
           const _DetailBackButton(),
@@ -36,17 +59,44 @@ class AnimeDetailView extends ConsumerWidget {
       ),
     );
   }
+
+  void _retry(WidgetRef ref) {
+    ref
+      ..invalidate(animeDetailProvider(animeId))
+      ..invalidate(favoriteAnimeControllerProvider(animeId));
+  }
+
+  Future<void> _addToFavorites(WidgetRef ref, AnimeDetail anime) async {
+    await ref
+        .read(favoriteAnimeControllerProvider(anime.id).notifier)
+        .add(anime.toFavoriteAnimeDraft());
+  }
+
+  Future<void> _removeFromFavorites(WidgetRef ref, AnimeDetail anime) async {
+    await ref.read(favoriteAnimeControllerProvider(anime.id).notifier).remove();
+  }
 }
 
 class _AnimeDetailContent extends StatelessWidget {
-  const _AnimeDetailContent({required this.anime});
+  const _AnimeDetailContent({
+    required this.anime,
+    required this.onAdd,
+    required this.onRemove,
+    this.favoriteState,
+    this.isFavoriteLoading = false,
+    this.onRetryFavorite,
+  });
 
   final AnimeDetail anime;
+  final FavoriteAnimeState? favoriteState;
+  final bool isFavoriteLoading;
+  final Future<void> Function() onAdd;
+  final Future<void> Function() onRemove;
+  final VoidCallback? onRetryFavorite;
 
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.paddingOf(context).bottom + 32;
-    final appColors = context.appColors;
 
     return CustomScrollView(
       slivers: [
@@ -101,26 +151,7 @@ class _AnimeDetailContent extends StatelessWidget {
                       const SizedBox(height: 8),
                     ],
                     const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: FilledButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.favorite_border_rounded),
-                        label: const Text('Ajouter aux favoris'),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: appColors.brandBackground,
-                          foregroundColor: appColors.onBrandBackground,
-                          textStyle: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(60),
-                          ),
-                        ),
-                      ),
-                    ),
+                    _buildFavoriteAction(),
                     const SizedBox(height: 16),
                     AnimeDetailSynopsisCard(description: anime.description),
                   ],
@@ -130,6 +161,35 @@ class _AnimeDetailContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildFavoriteAction() {
+    final state = favoriteState;
+    if (state != null) {
+      return FavoriteAnimeButton(
+        isFavorite: state.isFavorite,
+        isProcessing: state.isProcessing,
+        onAdd: onAdd,
+        onRemove: onRemove,
+      );
+    }
+
+    if (isFavoriteLoading) {
+      return const SizedBox(
+        height: 52,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: OutlinedButton.icon(
+        onPressed: onRetryFavorite,
+        icon: const Icon(Icons.refresh_rounded),
+        label: const Text('Réessayer les favoris'),
+      ),
     );
   }
 }

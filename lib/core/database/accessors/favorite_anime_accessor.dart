@@ -1,11 +1,26 @@
 part of '../database.dart';
 
-/// Point d'extension pour les futures requêtes liées aux anime favoris.
-///
-/// Aucun accès métier n'est défini à cette étape : l'accessor prépare seulement
-/// l'API Drift moderne autour de [DatabaseAccessor].
+/// Accès Drift aux opérations de persistance des anime favoris.
 @DriftAccessor(tables: [FavoriteAnime])
 class FavoriteAnimeAccessor extends DatabaseAccessor<AppDatabase>
     with _$FavoriteAnimeAccessorMixin {
   FavoriteAnimeAccessor(super.attachedDatabase);
+
+  Future<bool> contains(int animeId) async {
+    final anime = await (select(
+      favoriteAnime,
+    )..where((table) => table.animeId.equals(animeId))).getSingleOrNull();
+
+    return anime != null;
+  }
+
+  Future<void> upsert(FavoriteAnimeCompanion anime) async {
+    await into(favoriteAnime).insertOnConflictUpdate(anime);
+  }
+
+  Future<void> deleteByAnimeId(int animeId) async {
+    await (delete(
+      favoriteAnime,
+    )..where((table) => table.animeId.equals(animeId))).go();
+  }
 }
