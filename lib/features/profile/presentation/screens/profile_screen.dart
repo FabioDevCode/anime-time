@@ -1,4 +1,5 @@
 import 'package:anime_time/common/models/anime_media.dart';
+import 'package:anime_time/common/utils/anime_status.dart';
 import 'package:anime_time/common/widgets/anime_catalog/anime_cover_card.dart';
 import 'package:anime_time/features/profile/data/models/profile_data.dart';
 import 'package:anime_time/features/profile/providers/profile_providers.dart';
@@ -59,15 +60,24 @@ class _StatisticsRow extends StatelessWidget {
           child: _StatisticCard(
             value: statistics.totalFavorites,
             label: 'Favoris',
+            status: 'FINISHED',
           ),
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: _StatisticCard(value: statistics.releasing, label: 'En cours'),
+          child: _StatisticCard(
+            value: statistics.releasing,
+            label: 'En cours',
+            status: 'RELEASING',
+          ),
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: _StatisticCard(value: statistics.upcoming, label: 'À venir'),
+          child: _StatisticCard(
+            value: statistics.upcoming,
+            label: 'À venir',
+            status: 'NOT_YET_RELEASED',
+          ),
         ),
       ],
     );
@@ -75,19 +85,24 @@ class _StatisticsRow extends StatelessWidget {
 }
 
 class _StatisticCard extends StatelessWidget {
-  const _StatisticCard({required this.value, required this.label});
+  const _StatisticCard({
+    required this.value,
+    required this.label,
+    required this.status,
+  });
 
   final int value;
   final String label;
+  final String status;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final statusBadge = status.badgeData!;
 
     return Card(
       margin: EdgeInsets.zero,
-      color: colorScheme.surfaceContainerHigh,
+      color: statusBadge.backgroundColor,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: SizedBox(
@@ -104,7 +119,7 @@ class _StatisticCard extends StatelessWidget {
                     value.toString(),
                     style: textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: colorScheme.onSurfaceVariant,
+                      color: statusBadge.textColor,
                     ),
                   ),
                 ),
@@ -115,7 +130,7 @@ class _StatisticCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: textTheme.labelMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+                  color: statusBadge.textColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:anime_time/common/models/anime_media.dart';
+import 'package:anime_time/common/utils/anime_status.dart';
 import 'package:anime_time/common/widgets/anime_catalog/anime_cover_card.dart';
 import 'package:anime_time/core/theme/app_theme.dart';
 import 'package:anime_time/features/profile/data/models/profile_data.dart';
@@ -81,6 +82,18 @@ void main() {
         matching: find.byType(Card),
       );
       expect(statisticCards, findsNWidgets(3));
+      expect(
+        tester.widget<Card>(statisticCards.first).color,
+        'FINISHED'.badgeData!.backgroundColor,
+      );
+      expect(
+        tester.widget<Card>(statisticCards.at(1)).color,
+        'RELEASING'.badgeData!.backgroundColor,
+      );
+      expect(
+        tester.widget<Card>(statisticCards.at(2)).color,
+        'NOT_YET_RELEASED'.badgeData!.backgroundColor,
+      );
 
       final mobileCardWidth = tester.getSize(statisticCards.first).width;
       expect(
