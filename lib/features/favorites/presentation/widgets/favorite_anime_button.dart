@@ -158,17 +158,11 @@ class FavoriteAnimeButton extends StatelessWidget {
             horizontal: 16,
             vertical: 16,
           ),
-          title: const Text('Retirer des favoris'),
-          content: SizedBox(
-            width: screenWidth * 0.75,
-            child: const Text(
-              'Êtes-vous sûr(e) de vouloir supprimer cet anime de vos favoris ?',
-            ),
-          ),
-          actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          actionsPadding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
           actions: [
             SizedBox(
-              width: double.infinity,
+              // width: double.infinity,
+              width: screenWidth * 0.75,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -179,7 +173,8 @@ class FavoriteAnimeButton extends StatelessWidget {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Text('Retirer des favoris'),
+                    // child: const Text('Retirer des favoris'),
+                    child: const Text('Confirmer le retrait des favoris'),
                   ),
                   const SizedBox(height: 16),
                   OutlinedButton(
