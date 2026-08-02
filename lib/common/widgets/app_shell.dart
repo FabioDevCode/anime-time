@@ -13,11 +13,15 @@ class AppShell extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       body: navigationShell,
-      bottomNavigationBar: FloatingNavBar(
-        currentTab: AppTab.values[navigationShell.currentIndex],
-        onTap: (tab) => navigationShell.goBranch(
-          tab.index,
-          initialLocation: tab.index == navigationShell.currentIndex,
+      bottomNavigationBar: MediaQuery.removePadding(
+        context: context,
+        removeBottom: true,
+        child: FloatingNavBar(
+          currentTab: AppTab.values[navigationShell.currentIndex],
+          onTap: (tab) => navigationShell.goBranch(
+            tab.index,
+            initialLocation: tab.index == navigationShell.currentIndex,
+          ),
         ),
       ),
     );

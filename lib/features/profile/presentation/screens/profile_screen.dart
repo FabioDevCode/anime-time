@@ -4,6 +4,7 @@ import 'package:anime_time/features/profile/data/models/profile_data.dart';
 import 'package:anime_time/features/profile/providers/profile_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:anime_time/core/theme/app_colors_extension.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -13,6 +14,7 @@ class ProfileScreen extends ConsumerWidget {
     final profileData = ref.watch(profileDataProvider);
 
     return SafeArea(
+      bottom: false,
       child: profileData.when(
         data: (data) => _ProfileContent(data: data),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -29,17 +31,15 @@ class _ProfileContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.paddingOf(context).bottom + 112;
-
     return ListView(
-      padding: EdgeInsets.fromLTRB(20, 24, 20, bottomPadding),
+      padding: const EdgeInsets.fromLTRB(8, 24, 8, 96),
       children: [
         _StatisticsRow(statistics: data.statistics),
-        const SizedBox(height: 28),
+        const SizedBox(height: 24),
         const _LastSyncDivider(),
-        const SizedBox(height: 32),
+        const SizedBox(height: 12),
         _ProfileSection(title: 'Mes favoris', anime: data.favorites),
-        const SizedBox(height: 32),
+        const SizedBox(height: 12),
         _ProfileSection(title: 'À venir', anime: data.upcoming),
       ],
     );
@@ -89,9 +89,9 @@ class _StatisticCard extends StatelessWidget {
       margin: EdgeInsets.zero,
       color: colorScheme.surfaceContainerHigh,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: SizedBox(
-        height: 118,
+        height: 98,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
           child: Column(
@@ -103,13 +103,13 @@ class _StatisticCard extends StatelessWidget {
                   child: Text(
                     value.toString(),
                     style: textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w900,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 6),
+              // const SizedBox(height: 6),
               Text(
                 label,
                 maxLines: 1,
@@ -138,10 +138,10 @@ class _LastSyncDivider extends StatelessWidget {
       children: [
         const Expanded(child: Divider()),
         Flexible(
-          flex: 4,
+          flex: 3,
           fit: FlexFit.tight,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
@@ -167,6 +167,8 @@ class _ProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = context.appColors;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -180,11 +182,17 @@ class _ProfileSection extends StatelessWidget {
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
-            TextButton(onPressed: () {}, child: const Text('Voir plus')),
+            TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                foregroundColor: appColors.brandBackground,
+              ),
+              child: const Text('Voir plus'),
+            ),
           ],
         ),
         if (anime.isNotEmpty) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
           _AnimeCarousel(anime: anime),
         ],
       ],
@@ -210,7 +218,7 @@ class _AnimeCarousel extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: anime.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (context, index) => SizedBox(
               width: coverWidth,
               child: AnimeCoverCard(anime: anime[index]),

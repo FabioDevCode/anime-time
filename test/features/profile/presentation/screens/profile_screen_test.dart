@@ -47,7 +47,8 @@ void main() {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
-      expect(find.byType(SafeArea), findsOneWidget);
+      final safeArea = tester.widget<SafeArea>(find.byType(SafeArea));
+      expect(safeArea.bottom, isFalse);
       expect(find.text('12'), findsOneWidget);
       expect(find.text('4'), findsOneWidget);
       expect(find.text('3'), findsOneWidget);
