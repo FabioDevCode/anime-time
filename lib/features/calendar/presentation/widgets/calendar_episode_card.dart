@@ -52,18 +52,6 @@ class CalendarEpisodeCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    // if (episode.nativeTitle case final nativeTitle?
-                    //     when nativeTitle != episode.title) ...[
-                    //   const SizedBox(height: 2),
-                    //   Text(
-                    //     nativeTitle,
-                    //     maxLines: 1,
-                    //     overflow: TextOverflow.ellipsis,
-                    //     style: textTheme.bodySmall?.copyWith(
-                    //       color: colorScheme.onSurfaceVariant,
-                    //     ),
-                    //   ),
-                    // ],
                     const SizedBox(height: 10),
                     Text(
                       'Épisode ${episode.episode}',
