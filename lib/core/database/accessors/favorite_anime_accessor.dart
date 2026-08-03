@@ -17,6 +17,16 @@ class FavoriteAnimeAccessor extends DatabaseAccessor<AppDatabase>
   /// Observe l'ensemble des favoris afin de mettre à jour les vues locales.
   Stream<List<FavoriteAnimeData>> watchAll() => select(favoriteAnime).watch();
 
+  /// Observe uniquement les favoris dont la diffusion est en cours.
+  ///
+  /// Le calendrier s'appuie sur cette sélection locale comme source de vérité
+  /// avant de demander les horaires dynamiques à AniList.
+  Stream<List<FavoriteAnimeData>> watchReleasing() {
+    return (select(
+      favoriteAnime,
+    )..where((table) => table.status.equals('RELEASING'))).watch();
+  }
+
   Future<void> upsert(FavoriteAnimeCompanion anime) async {
     await into(favoriteAnime).insertOnConflictUpdate(anime);
   }
