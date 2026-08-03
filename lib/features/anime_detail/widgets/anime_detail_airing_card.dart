@@ -34,7 +34,7 @@ class AnimeDetailAiringCard extends StatelessWidget {
         title: Text(episodeLabel),
         subtitle: nextEpisode.airingAt == null
             ? null
-            : Text('Diffusion ${_formatDate(nextEpisode.airingAt!)}'),
+            : Text(_formatDate(nextEpisode.airingAt!)),
       ),
     );
   }

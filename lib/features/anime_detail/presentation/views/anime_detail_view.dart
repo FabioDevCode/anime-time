@@ -117,7 +117,7 @@ class _AnimeDetailContent extends StatelessWidget {
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 4,
-                        runSpacing: 4,
+                        runSpacing: -12,
                         children: anime.genres.map((genre) {
                           return Chip(
                             label: Text(
