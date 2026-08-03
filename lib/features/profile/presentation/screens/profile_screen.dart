@@ -1,10 +1,12 @@
 import 'package:anime_time/common/models/anime_media.dart';
 import 'package:anime_time/common/utils/anime_status.dart';
 import 'package:anime_time/common/widgets/anime_catalog/anime_cover_card.dart';
+import 'package:anime_time/features/anime_detail_profile/routes/anime_detail_profile_route.dart';
 import 'package:anime_time/features/profile/data/models/profile_data.dart';
 import 'package:anime_time/features/profile/providers/profile_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:anime_time/core/theme/app_colors_extension.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -236,7 +238,12 @@ class _AnimeCarousel extends StatelessWidget {
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (context, index) => SizedBox(
               width: coverWidth,
-              child: AnimeCoverCard(anime: anime[index]),
+              child: AnimeCoverCard(
+                anime: anime[index],
+                onTap: () => context.push(
+                  AnimeDetailProfileRoute.location(anime[index].id),
+                ),
+              ),
             ),
           ),
         );

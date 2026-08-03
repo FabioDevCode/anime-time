@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:anime_time/common/widgets/app_shell.dart';
 import 'package:anime_time/core/router/app_tab.dart';
 import 'package:anime_time/features/anime_detail/routes/anime_detail_route.dart';
+import 'package:anime_time/features/anime_detail_profile/routes/anime_detail_profile_route.dart';
 import 'package:anime_time/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:anime_time/features/discover/presentation/screens/discover_screen.dart';
 import 'package:anime_time/features/profile/presentation/screens/profile_screen.dart';
@@ -35,6 +36,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: AnimeDetailRoute.path,
       pageBuilder: (context, state) => AnimeDetailRoute.buildPage(state),
+    ),
+    GoRoute(
+      path: AnimeDetailProfileRoute.path,
+      pageBuilder: (context, state) => AnimeDetailProfileRoute.buildPage(state),
     ),
   ],
 );
