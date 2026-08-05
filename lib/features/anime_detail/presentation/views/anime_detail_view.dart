@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:anime_time/features/anime_detail/data/mappers/anime_detail_to_favorite_anime_draft.dart';
 import 'package:anime_time/features/anime_detail/data/models/anime_detail.dart';
 import 'package:anime_time/features/anime_detail/providers/anime_detail_providers.dart';
 import 'package:anime_time/features/anime_detail/widgets/anime_detail_airing_card.dart';
@@ -67,9 +66,7 @@ class AnimeDetailView extends ConsumerWidget {
   }
 
   Future<void> _addToFavorites(WidgetRef ref, AnimeDetail anime) async {
-    await ref
-        .read(favoriteAnimeControllerProvider(anime.id).notifier)
-        .add(anime.toFavoriteAnimeDraft());
+    await ref.read(favoriteAnimeControllerProvider(anime.id).notifier).add();
   }
 
   Future<void> _removeFromFavorites(WidgetRef ref, AnimeDetail anime) async {

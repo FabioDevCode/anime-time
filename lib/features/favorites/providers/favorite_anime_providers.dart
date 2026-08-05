@@ -1,6 +1,6 @@
 import 'package:anime_time/core/database/database_provider.dart';
 import 'package:anime_time/features/favorites/data/favorite_anime_repository.dart';
-import 'package:anime_time/features/favorites/data/models/favorite_anime_draft.dart';
+import 'package:anime_time/features/favorites/providers/favorite_series_providers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,7 +50,7 @@ class FavoriteAnimeController extends AsyncNotifier<FavoriteAnimeState> {
     return FavoriteAnimeState(isFavorite: isFavorite);
   }
 
-  Future<bool> add(FavoriteAnimeDraft anime) async {
+  Future<bool> add() async {
     final current = state.asData?.value;
     if (current == null || current.isFavorite || current.isProcessing) {
       return false;
@@ -59,7 +59,7 @@ class FavoriteAnimeController extends AsyncNotifier<FavoriteAnimeState> {
     state = AsyncData(current.copyWith(isProcessing: true));
 
     try {
-      await _repository.add(anime);
+      await ref.read(favoriteSeriesServiceProvider).addFavoriteAnime(_animeId);
       if (!ref.mounted) {
         return false;
       }
