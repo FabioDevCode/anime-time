@@ -161,6 +161,7 @@ class FavoriteSeriesService {
           status: Value(season.status),
           season: Value(season.season),
           seasonYear: Value(season.seasonYear),
+          lastEpisodeWatched: const Value(0),
         ),
       );
     }

@@ -23,7 +23,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -34,6 +34,9 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(favoriteAnime, favoriteAnime.seriesId);
         await m.addColumn(favoriteAnime, favoriteAnime.seasonNumber);
         await m.addColumn(favoriteAnime, favoriteAnime.episodes);
+      }
+      if (from < 3) {
+        await m.addColumn(favoriteAnime, favoriteAnime.lastEpisodeWatched);
       }
     },
   );

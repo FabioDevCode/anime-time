@@ -28,7 +28,13 @@ class FavoriteAnimeAccessor extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> upsert(FavoriteAnimeCompanion anime) async {
-    await into(favoriteAnime).insertOnConflictUpdate(anime);
+    // On conflit, lastEpisodeWatched (donnée utilisateur) n'est jamais écrasé.
+    await into(favoriteAnime).insert(
+      anime,
+      onConflict: DoUpdate(
+        (_) => anime.copyWith(lastEpisodeWatched: const Value.absent()),
+      ),
+    );
   }
 
   Future<void> deleteByAnimeId(int animeId) async {

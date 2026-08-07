@@ -518,6 +518,17 @@ class $FavoriteAnimeTable extends FavoriteAnime
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _lastEpisodeWatchedMeta =
+      const VerificationMeta('lastEpisodeWatched');
+  @override
+  late final GeneratedColumn<int> lastEpisodeWatched = GeneratedColumn<int>(
+    'last_episode_watched',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
@@ -558,6 +569,7 @@ class $FavoriteAnimeTable extends FavoriteAnime
     coverImage,
     bannerImage,
     episodes,
+    lastEpisodeWatched,
     status,
     season,
     seasonYear,
@@ -643,6 +655,15 @@ class $FavoriteAnimeTable extends FavoriteAnime
         episodes.isAcceptableOrUnknown(data['episodes']!, _episodesMeta),
       );
     }
+    if (data.containsKey('last_episode_watched')) {
+      context.handle(
+        _lastEpisodeWatchedMeta,
+        lastEpisodeWatched.isAcceptableOrUnknown(
+          data['last_episode_watched']!,
+          _lastEpisodeWatchedMeta,
+        ),
+      );
+    }
     if (data.containsKey('status')) {
       context.handle(
         _statusMeta,
@@ -706,6 +727,10 @@ class $FavoriteAnimeTable extends FavoriteAnime
         DriftSqlType.int,
         data['${effectivePrefix}episodes'],
       ),
+      lastEpisodeWatched: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}last_episode_watched'],
+      )!,
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}status'],
@@ -745,6 +770,7 @@ class FavoriteAnimeData extends DataClass
   final String? coverImage;
   final String? bannerImage;
   final int? episodes;
+  final int lastEpisodeWatched;
   final String? status;
   final String? season;
   final int? seasonYear;
@@ -758,6 +784,7 @@ class FavoriteAnimeData extends DataClass
     this.coverImage,
     this.bannerImage,
     this.episodes,
+    required this.lastEpisodeWatched,
     this.status,
     this.season,
     this.seasonYear,
@@ -790,6 +817,7 @@ class FavoriteAnimeData extends DataClass
     if (!nullToAbsent || episodes != null) {
       map['episodes'] = Variable<int>(episodes);
     }
+    map['last_episode_watched'] = Variable<int>(lastEpisodeWatched);
     if (!nullToAbsent || status != null) {
       map['status'] = Variable<String>(status);
     }
@@ -829,6 +857,7 @@ class FavoriteAnimeData extends DataClass
       episodes: episodes == null && nullToAbsent
           ? const Value.absent()
           : Value(episodes),
+      lastEpisodeWatched: Value(lastEpisodeWatched),
       status: status == null && nullToAbsent
           ? const Value.absent()
           : Value(status),
@@ -856,6 +885,7 @@ class FavoriteAnimeData extends DataClass
       coverImage: serializer.fromJson<String?>(json['coverImage']),
       bannerImage: serializer.fromJson<String?>(json['bannerImage']),
       episodes: serializer.fromJson<int?>(json['episodes']),
+      lastEpisodeWatched: serializer.fromJson<int>(json['lastEpisodeWatched']),
       status: serializer.fromJson<String?>(json['status']),
       season: serializer.fromJson<String?>(json['season']),
       seasonYear: serializer.fromJson<int?>(json['seasonYear']),
@@ -874,6 +904,7 @@ class FavoriteAnimeData extends DataClass
       'coverImage': serializer.toJson<String?>(coverImage),
       'bannerImage': serializer.toJson<String?>(bannerImage),
       'episodes': serializer.toJson<int?>(episodes),
+      'lastEpisodeWatched': serializer.toJson<int>(lastEpisodeWatched),
       'status': serializer.toJson<String?>(status),
       'season': serializer.toJson<String?>(season),
       'seasonYear': serializer.toJson<int?>(seasonYear),
@@ -890,6 +921,7 @@ class FavoriteAnimeData extends DataClass
     Value<String?> coverImage = const Value.absent(),
     Value<String?> bannerImage = const Value.absent(),
     Value<int?> episodes = const Value.absent(),
+    int? lastEpisodeWatched,
     Value<String?> status = const Value.absent(),
     Value<String?> season = const Value.absent(),
     Value<int?> seasonYear = const Value.absent(),
@@ -903,6 +935,7 @@ class FavoriteAnimeData extends DataClass
     coverImage: coverImage.present ? coverImage.value : this.coverImage,
     bannerImage: bannerImage.present ? bannerImage.value : this.bannerImage,
     episodes: episodes.present ? episodes.value : this.episodes,
+    lastEpisodeWatched: lastEpisodeWatched ?? this.lastEpisodeWatched,
     status: status.present ? status.value : this.status,
     season: season.present ? season.value : this.season,
     seasonYear: seasonYear.present ? seasonYear.value : this.seasonYear,
@@ -930,6 +963,9 @@ class FavoriteAnimeData extends DataClass
           ? data.bannerImage.value
           : this.bannerImage,
       episodes: data.episodes.present ? data.episodes.value : this.episodes,
+      lastEpisodeWatched: data.lastEpisodeWatched.present
+          ? data.lastEpisodeWatched.value
+          : this.lastEpisodeWatched,
       status: data.status.present ? data.status.value : this.status,
       season: data.season.present ? data.season.value : this.season,
       seasonYear: data.seasonYear.present
@@ -950,6 +986,7 @@ class FavoriteAnimeData extends DataClass
           ..write('coverImage: $coverImage, ')
           ..write('bannerImage: $bannerImage, ')
           ..write('episodes: $episodes, ')
+          ..write('lastEpisodeWatched: $lastEpisodeWatched, ')
           ..write('status: $status, ')
           ..write('season: $season, ')
           ..write('seasonYear: $seasonYear')
@@ -968,6 +1005,7 @@ class FavoriteAnimeData extends DataClass
     coverImage,
     bannerImage,
     episodes,
+    lastEpisodeWatched,
     status,
     season,
     seasonYear,
@@ -985,6 +1023,7 @@ class FavoriteAnimeData extends DataClass
           other.coverImage == this.coverImage &&
           other.bannerImage == this.bannerImage &&
           other.episodes == this.episodes &&
+          other.lastEpisodeWatched == this.lastEpisodeWatched &&
           other.status == this.status &&
           other.season == this.season &&
           other.seasonYear == this.seasonYear);
@@ -1000,6 +1039,7 @@ class FavoriteAnimeCompanion extends UpdateCompanion<FavoriteAnimeData> {
   final Value<String?> coverImage;
   final Value<String?> bannerImage;
   final Value<int?> episodes;
+  final Value<int> lastEpisodeWatched;
   final Value<String?> status;
   final Value<String?> season;
   final Value<int?> seasonYear;
@@ -1013,6 +1053,7 @@ class FavoriteAnimeCompanion extends UpdateCompanion<FavoriteAnimeData> {
     this.coverImage = const Value.absent(),
     this.bannerImage = const Value.absent(),
     this.episodes = const Value.absent(),
+    this.lastEpisodeWatched = const Value.absent(),
     this.status = const Value.absent(),
     this.season = const Value.absent(),
     this.seasonYear = const Value.absent(),
@@ -1027,6 +1068,7 @@ class FavoriteAnimeCompanion extends UpdateCompanion<FavoriteAnimeData> {
     this.coverImage = const Value.absent(),
     this.bannerImage = const Value.absent(),
     this.episodes = const Value.absent(),
+    this.lastEpisodeWatched = const Value.absent(),
     this.status = const Value.absent(),
     this.season = const Value.absent(),
     this.seasonYear = const Value.absent(),
@@ -1041,6 +1083,7 @@ class FavoriteAnimeCompanion extends UpdateCompanion<FavoriteAnimeData> {
     Expression<String>? coverImage,
     Expression<String>? bannerImage,
     Expression<int>? episodes,
+    Expression<int>? lastEpisodeWatched,
     Expression<String>? status,
     Expression<String>? season,
     Expression<int>? seasonYear,
@@ -1055,6 +1098,8 @@ class FavoriteAnimeCompanion extends UpdateCompanion<FavoriteAnimeData> {
       if (coverImage != null) 'cover_image': coverImage,
       if (bannerImage != null) 'banner_image': bannerImage,
       if (episodes != null) 'episodes': episodes,
+      if (lastEpisodeWatched != null)
+        'last_episode_watched': lastEpisodeWatched,
       if (status != null) 'status': status,
       if (season != null) 'season': season,
       if (seasonYear != null) 'season_year': seasonYear,
@@ -1071,6 +1116,7 @@ class FavoriteAnimeCompanion extends UpdateCompanion<FavoriteAnimeData> {
     Value<String?>? coverImage,
     Value<String?>? bannerImage,
     Value<int?>? episodes,
+    Value<int>? lastEpisodeWatched,
     Value<String?>? status,
     Value<String?>? season,
     Value<int?>? seasonYear,
@@ -1085,6 +1131,7 @@ class FavoriteAnimeCompanion extends UpdateCompanion<FavoriteAnimeData> {
       coverImage: coverImage ?? this.coverImage,
       bannerImage: bannerImage ?? this.bannerImage,
       episodes: episodes ?? this.episodes,
+      lastEpisodeWatched: lastEpisodeWatched ?? this.lastEpisodeWatched,
       status: status ?? this.status,
       season: season ?? this.season,
       seasonYear: seasonYear ?? this.seasonYear,
@@ -1121,6 +1168,9 @@ class FavoriteAnimeCompanion extends UpdateCompanion<FavoriteAnimeData> {
     if (episodes.present) {
       map['episodes'] = Variable<int>(episodes.value);
     }
+    if (lastEpisodeWatched.present) {
+      map['last_episode_watched'] = Variable<int>(lastEpisodeWatched.value);
+    }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
@@ -1145,6 +1195,7 @@ class FavoriteAnimeCompanion extends UpdateCompanion<FavoriteAnimeData> {
           ..write('coverImage: $coverImage, ')
           ..write('bannerImage: $bannerImage, ')
           ..write('episodes: $episodes, ')
+          ..write('lastEpisodeWatched: $lastEpisodeWatched, ')
           ..write('status: $status, ')
           ..write('season: $season, ')
           ..write('seasonYear: $seasonYear')
@@ -1716,6 +1767,7 @@ typedef $$FavoriteAnimeTableCreateCompanionBuilder =
       Value<String?> coverImage,
       Value<String?> bannerImage,
       Value<int?> episodes,
+      Value<int> lastEpisodeWatched,
       Value<String?> status,
       Value<String?> season,
       Value<int?> seasonYear,
@@ -1731,6 +1783,7 @@ typedef $$FavoriteAnimeTableUpdateCompanionBuilder =
       Value<String?> coverImage,
       Value<String?> bannerImage,
       Value<int?> episodes,
+      Value<int> lastEpisodeWatched,
       Value<String?> status,
       Value<String?> season,
       Value<int?> seasonYear,
@@ -1814,6 +1867,11 @@ class $$FavoriteAnimeTableFilterComposer
 
   ColumnFilters<int> get episodes => $composableBuilder(
     column: $table.episodes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lastEpisodeWatched => $composableBuilder(
+    column: $table.lastEpisodeWatched,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1905,6 +1963,11 @@ class $$FavoriteAnimeTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get lastEpisodeWatched => $composableBuilder(
+    column: $table.lastEpisodeWatched,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get status => $composableBuilder(
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
@@ -1989,6 +2052,11 @@ class $$FavoriteAnimeTableAnnotationComposer
   GeneratedColumn<int> get episodes =>
       $composableBuilder(column: $table.episodes, builder: (column) => column);
 
+  GeneratedColumn<int> get lastEpisodeWatched => $composableBuilder(
+    column: $table.lastEpisodeWatched,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
 
@@ -2061,6 +2129,7 @@ class $$FavoriteAnimeTableTableManager
                 Value<String?> coverImage = const Value.absent(),
                 Value<String?> bannerImage = const Value.absent(),
                 Value<int?> episodes = const Value.absent(),
+                Value<int> lastEpisodeWatched = const Value.absent(),
                 Value<String?> status = const Value.absent(),
                 Value<String?> season = const Value.absent(),
                 Value<int?> seasonYear = const Value.absent(),
@@ -2074,6 +2143,7 @@ class $$FavoriteAnimeTableTableManager
                 coverImage: coverImage,
                 bannerImage: bannerImage,
                 episodes: episodes,
+                lastEpisodeWatched: lastEpisodeWatched,
                 status: status,
                 season: season,
                 seasonYear: seasonYear,
@@ -2089,6 +2159,7 @@ class $$FavoriteAnimeTableTableManager
                 Value<String?> coverImage = const Value.absent(),
                 Value<String?> bannerImage = const Value.absent(),
                 Value<int?> episodes = const Value.absent(),
+                Value<int> lastEpisodeWatched = const Value.absent(),
                 Value<String?> status = const Value.absent(),
                 Value<String?> season = const Value.absent(),
                 Value<int?> seasonYear = const Value.absent(),
@@ -2102,6 +2173,7 @@ class $$FavoriteAnimeTableTableManager
                 coverImage: coverImage,
                 bannerImage: bannerImage,
                 episodes: episodes,
+                lastEpisodeWatched: lastEpisodeWatched,
                 status: status,
                 season: season,
                 seasonYear: seasonYear,

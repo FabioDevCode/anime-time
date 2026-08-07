@@ -24,6 +24,9 @@ class FavoriteAnime extends Table {
 
   IntColumn get episodes => integer().nullable()();
 
+  IntColumn get lastEpisodeWatched =>
+      integer().withDefault(const Constant(0))();
+
   TextColumn get status => text().nullable()();
 
   TextColumn get season => text().nullable()();
