@@ -1,9 +1,11 @@
 import 'package:anime_time/common/models/anime_media.dart';
+import 'package:anime_time/common/models/series_media.dart';
 import 'package:anime_time/common/utils/anime_status.dart';
 import 'package:anime_time/common/widgets/anime_catalog/anime_cover_card.dart';
 import 'package:anime_time/features/anime_detail_profile/routes/anime_detail_profile_route.dart';
 import 'package:anime_time/features/profile/data/models/profile_data.dart';
 import 'package:anime_time/features/profile/providers/profile_providers.dart';
+import 'package:anime_time/features/serie_details/routes/serie_details_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -38,8 +40,8 @@ class _ProfileContent extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8, 24, 8, 96),
       children: [
         _StatisticsRow(statistics: data.statistics),
-        const SizedBox(height: 24),
-        const _LastSyncDivider(),
+        const SizedBox(height: 12),
+        const _SeriesSection(),
         const SizedBox(height: 12),
         _ProfileSection(title: 'Mes favoris', anime: data.favorites),
         const SizedBox(height: 12),
@@ -144,38 +146,6 @@ class _StatisticCard extends StatelessWidget {
   }
 }
 
-class _LastSyncDivider extends StatelessWidget {
-  const _LastSyncDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Row(
-      children: [
-        const Expanded(child: Divider()),
-        Flexible(
-          flex: 3,
-          fit: FlexFit.tight,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                'Dernière mise à jour : 27/07/2026',
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-          ),
-        ),
-        const Expanded(child: Divider()),
-      ],
-    );
-  }
-}
-
 class _ProfileSection extends StatelessWidget {
   const _ProfileSection({required this.title, required this.anime});
 
@@ -226,7 +196,7 @@ class _AnimeCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final coverWidth = (constraints.maxWidth * 0.3)
+        final coverWidth = (constraints.maxWidth * 0.2)
             .clamp(96.0, 152.0)
             .toDouble();
 
@@ -264,6 +234,142 @@ class _ProfileLoadError extends StatelessWidget {
           'Impossible de charger le profil',
           style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
+class _SeriesSection extends ConsumerWidget {
+  const _SeriesSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final seriesAsync = ref.watch(favoriteSeriesListProvider);
+
+    return seriesAsync.maybeWhen(
+      data: (series) {
+        if (series.isEmpty) return const SizedBox.shrink();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                'Mes séries',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+            const SizedBox(height: 4),
+            _SeriesCarousel(series: series),
+          ],
+        );
+      },
+      orElse: () => const SizedBox.shrink(),
+    );
+  }
+}
+
+class _SeriesCarousel extends StatelessWidget {
+  const _SeriesCarousel({required this.series});
+
+  final List<SeriesMedia> series;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final coverWidth = (constraints.maxWidth * 0.2)
+            .clamp(96.0, 152.0)
+            .toDouble();
+
+        return SizedBox(
+          height: coverWidth * 1.5,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: series.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              final item = series[index];
+              return SizedBox(
+                width: coverWidth,
+                child: _SeriesCoverCard(
+                  series: item,
+                  onTap: () =>
+                      context.push(SerieDetailsRoute.location(item.seriesId)),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SeriesCoverCard extends StatelessWidget {
+  const _SeriesCoverCard({required this.series, required this.onTap});
+
+  final SeriesMedia series;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final title =
+        series.displayTitleRomaji ??
+        series.displayTitleEnglish ??
+        series.displayTitleNative;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (series.coverImage != null)
+              Image.network(
+                series.coverImage!,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) =>
+                    ColoredBox(color: colorScheme.surfaceContainerHighest),
+              )
+            else
+              ColoredBox(color: colorScheme.surfaceContainerHighest),
+            if (title != null)
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(6, 16, 6, 6),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.78),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                  child: Text(
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      height: 1.2,
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );

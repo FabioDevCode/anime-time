@@ -42,4 +42,11 @@ class FavoriteAnimeAccessor extends DatabaseAccessor<AppDatabase>
       favoriteAnime,
     )..where((table) => table.animeId.equals(animeId))).go();
   }
+
+  Stream<List<FavoriteAnimeData>> watchBySeriesId(int seriesId) {
+    return (select(favoriteAnime)
+          ..where((t) => t.seriesId.equals(seriesId))
+          ..orderBy([(t) => OrderingTerm.asc(t.seasonNumber)]))
+        .watch();
+  }
 }
