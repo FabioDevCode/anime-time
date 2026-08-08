@@ -158,6 +158,7 @@ class FavoriteSeriesService {
           coverImage: Value(season.coverImage),
           bannerImage: Value(season.bannerImage),
           episodes: Value(season.episodes),
+          airedEpisodes: Value(season.airedEpisodes),
           status: Value(season.status),
           season: Value(season.season),
           seasonYear: Value(season.seasonYear),
@@ -206,6 +207,10 @@ class FavoriteSeriesService {
           coverImage: Value(season.coverImage),
           bannerImage: Value(season.bannerImage),
           episodes: Value(season.episodes),
+          // Cas 3 : si la valeur AniList est null, on préserve la valeur existante.
+          airedEpisodes: season.airedEpisodes != null
+              ? Value(season.airedEpisodes)
+              : const Value.absent(),
           status: Value(season.status),
           season: Value(season.season),
           seasonYear: Value(season.seasonYear),
@@ -221,6 +226,8 @@ class FavoriteSeriesService {
         node.coverImage != row.coverImage ||
         node.bannerImage != row.bannerImage ||
         node.episodes != row.episodes ||
+        (node.airedEpisodes != null &&
+            node.airedEpisodes != row.airedEpisodes) ||
         node.status != row.status ||
         node.season != row.season ||
         node.seasonYear != row.seasonYear;

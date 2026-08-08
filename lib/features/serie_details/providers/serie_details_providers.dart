@@ -4,6 +4,15 @@ import 'package:anime_time/core/database/database_provider.dart';
 import 'package:anime_time/core/graphql/graphql_client_provider.dart';
 import 'package:anime_time/features/serie_details/data/models/serie_graphql_info.dart';
 import 'package:anime_time/features/serie_details/data/serie_details_repository.dart';
+import 'package:anime_time/features/serie_details/data/watch_progress_repository.dart';
+
+final watchProgressRepositoryProvider = Provider<WatchProgressRepository>((
+  ref,
+) {
+  return WatchProgressRepository(
+    ref.watch(appDatabaseProvider).favoriteAnimeAccessor,
+  );
+});
 
 final serieDetailsRepositoryProvider = Provider<SerieDetailsRepository>((ref) {
   return SerieDetailsRepository(ref.watch(graphqlClientProvider));

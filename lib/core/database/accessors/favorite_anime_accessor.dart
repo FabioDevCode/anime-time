@@ -29,10 +29,18 @@ class FavoriteAnimeAccessor extends DatabaseAccessor<AppDatabase>
 
   Future<void> upsert(FavoriteAnimeCompanion anime) async {
     // On conflit, lastEpisodeWatched (donnée utilisateur) n'est jamais écrasé.
+    // airedEpisodes est préservé si la nouvelle valeur serait null (Cas 3).
+    final airedEpisodesForUpdate =
+        anime.airedEpisodes.present && anime.airedEpisodes.value == null
+        ? const Value<int?>.absent()
+        : anime.airedEpisodes;
     await into(favoriteAnime).insert(
       anime,
       onConflict: DoUpdate(
-        (_) => anime.copyWith(lastEpisodeWatched: const Value.absent()),
+        (_) => anime.copyWith(
+          lastEpisodeWatched: const Value.absent(),
+          airedEpisodes: airedEpisodesForUpdate,
+        ),
       ),
     );
   }
@@ -48,5 +56,10 @@ class FavoriteAnimeAccessor extends DatabaseAccessor<AppDatabase>
           ..where((t) => t.seriesId.equals(seriesId))
           ..orderBy([(t) => OrderingTerm.asc(t.seasonNumber)]))
         .watch();
+  }
+
+  Future<void> updateLastEpisodeWatched(int animeId, int value) async {
+    await (update(favoriteAnime)..where((t) => t.animeId.equals(animeId)))
+        .write(FavoriteAnimeCompanion(lastEpisodeWatched: Value(value)));
   }
 }

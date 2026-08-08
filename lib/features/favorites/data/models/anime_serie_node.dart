@@ -8,6 +8,7 @@ class AnimeSerieNode {
     this.coverImage,
     this.bannerImage,
     this.episodes,
+    this.airedEpisodes,
     this.status,
     this.season,
     this.seasonYear,
@@ -22,6 +23,9 @@ class AnimeSerieNode {
   final String? coverImage;
   final String? bannerImage;
   final int? episodes;
+
+  /// Calculé depuis nextAiringEpisode.episode - 1 ; null si inconnu.
+  final int? airedEpisodes;
   final String? status;
   final String? season;
   final int? seasonYear;
@@ -31,6 +35,9 @@ class AnimeSerieNode {
     final title = json['title'] as Map<String, dynamic>?;
     final coverImage = json['coverImage'] as Map<String, dynamic>?;
     final edges = (json['relations']?['edges'] as List<dynamic>?) ?? const [];
+    final nextAiringEpisode =
+        json['nextAiringEpisode'] as Map<String, dynamic>?;
+    final nextEpNumber = nextAiringEpisode?['episode'] as int?;
 
     return AnimeSerieNode(
       id: json['id'] as int,
@@ -41,6 +48,7 @@ class AnimeSerieNode {
       coverImage: coverImage?['large'] as String?,
       bannerImage: json['bannerImage'] as String?,
       episodes: json['episodes'] as int?,
+      airedEpisodes: nextEpNumber != null ? nextEpNumber - 1 : null,
       status: json['status'] as String?,
       season: json['season'] as String?,
       seasonYear: json['seasonYear'] as int?,

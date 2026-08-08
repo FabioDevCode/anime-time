@@ -24,6 +24,9 @@ class FavoriteAnime extends Table {
 
   IntColumn get episodes => integer().nullable()();
 
+  /// Dernier épisode actuellement diffusé : nextAiringEpisode.episode - 1.
+  IntColumn get airedEpisodes => integer().nullable()();
+
   IntColumn get lastEpisodeWatched =>
       integer().withDefault(const Constant(0))();
 

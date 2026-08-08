@@ -19,6 +19,10 @@ final animeSerieQuery = gql(r'''
       status
       season
       seasonYear
+      nextAiringEpisode {
+        episode
+        airingAt
+      }
       relations {
         edges {
           relationType
@@ -39,6 +43,10 @@ final animeSerieQuery = gql(r'''
             status
             season
             seasonYear
+            nextAiringEpisode {
+              episode
+              airingAt
+            }
           }
         }
       }
