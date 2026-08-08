@@ -114,7 +114,7 @@ class FavoriteSeriesService {
     if (ordered.isEmpty) throw Exception('Série vide.');
 
     final first = ordered.first;
-    final latest = ordered.last;
+    final latest = _selectLatestSeason(ordered);
     final animeIds = ordered.map((s) => s.id).toList();
 
     // Cherche si l'un des anime de la série a déjà un seriesId en base.
@@ -184,6 +184,14 @@ class FavoriteSeriesService {
       await _saveSeasons(ordered, seriesId);
     } else {
       await _updateSeasonMetadata(ordered, knownRows);
+      // Recalculer latestAnimeId si un statut a changé (ex : NOT_YET_RELEASED → RELEASING).
+      final newLatest = _selectLatestSeason(ordered);
+      if (newLatest.id != latestAnimeId) {
+        await _database.favoriteSeriesAccessor.updateSeries(
+          seriesId,
+          FavoriteSeriesCompanion(latestAnimeId: Value(newLatest.id)),
+        );
+      }
     }
   }
 
@@ -231,5 +239,14 @@ class FavoriteSeriesService {
         node.status != row.status ||
         node.season != row.season ||
         node.seasonYear != row.seasonYear;
+  }
+
+  /// Sélectionne la saison de référence : la plus avancée parmi RELEASING/FINISHED,
+  /// avec fallback sur la dernière saison si aucune ne correspond.
+  AnimeSerieNode _selectLatestSeason(List<AnimeSerieNode> ordered) {
+    return ordered.lastWhere(
+      (s) => s.status == 'RELEASING' || s.status == 'FINISHED',
+      orElse: () => ordered.last,
+    );
   }
 }

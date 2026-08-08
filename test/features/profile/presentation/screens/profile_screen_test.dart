@@ -22,6 +22,7 @@ void main() {
       AnimeMedia(id: 1, status: 'RELEASING'),
       AnimeMedia(id: 2, status: 'FINISHED'),
     ],
+    releasing: [AnimeMedia(id: 1, status: 'RELEASING')],
     upcoming: [AnimeMedia(id: 3, status: 'NOT_YET_RELEASED')],
   );
 

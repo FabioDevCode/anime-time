@@ -9,7 +9,7 @@ import 'package:anime_time/features/serie_details/routes/serie_details_route.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:anime_time/core/theme/app_colors_extension.dart';
+// import 'package:anime_time/core/theme/app_colors_extension.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -40,11 +40,11 @@ class _ProfileContent extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8, 24, 8, 96),
       children: [
         _StatisticsRow(statistics: data.statistics),
-        const SizedBox(height: 12),
+        const SizedBox(height: 24),
         const _SeriesSection(),
         const SizedBox(height: 12),
-        _ProfileSection(title: 'Mes favoris', anime: data.favorites),
-        const SizedBox(height: 12),
+        _ProfileSection(title: 'En cours', anime: data.releasing),
+        const SizedBox(height: 24),
         _ProfileSection(title: 'À venir', anime: data.upcoming),
       ],
     );
@@ -63,7 +63,8 @@ class _StatisticsRow extends StatelessWidget {
         Expanded(
           child: _StatisticCard(
             value: statistics.totalFavorites,
-            label: 'Favoris',
+            suplabel: 'Anime',
+            label: 'favoris',
             status: 'FINISHED',
           ),
         ),
@@ -71,7 +72,8 @@ class _StatisticsRow extends StatelessWidget {
         Expanded(
           child: _StatisticCard(
             value: statistics.releasing,
-            label: 'En cours',
+            suplabel: 'Saison',
+            label: 'en cours',
             status: 'RELEASING',
           ),
         ),
@@ -79,7 +81,8 @@ class _StatisticsRow extends StatelessWidget {
         Expanded(
           child: _StatisticCard(
             value: statistics.upcoming,
-            label: 'À venir',
+            suplabel: 'Saison',
+            label: 'à venir',
             status: 'NOT_YET_RELEASED',
           ),
         ),
@@ -91,11 +94,13 @@ class _StatisticsRow extends StatelessWidget {
 class _StatisticCard extends StatelessWidget {
   const _StatisticCard({
     required this.value,
+    required this.suplabel,
     required this.label,
     required this.status,
   });
 
   final int value;
+  final String suplabel;
   final String label;
   final String status;
 
@@ -108,9 +113,9 @@ class _StatisticCard extends StatelessWidget {
       margin: EdgeInsets.zero,
       color: statusBadge.backgroundColor,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: SizedBox(
-        height: 98,
+        height: 118,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
           child: Column(
@@ -129,6 +134,15 @@ class _StatisticCard extends StatelessWidget {
                 ),
               ),
               // const SizedBox(height: 6),
+              Text(
+                suplabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.labelMedium?.copyWith(
+                  color: statusBadge.textColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               Text(
                 label,
                 maxLines: 1,
@@ -154,7 +168,7 @@ class _ProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appColors = context.appColors;
+    // final appColors = context.appColors;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,13 +183,13 @@ class _ProfileSection extends StatelessWidget {
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
-            TextButton(
-              onPressed: () {},
-              style: TextButton.styleFrom(
-                foregroundColor: appColors.brandBackground,
-              ),
-              child: const Text('Voir plus'),
-            ),
+            // TextButton(
+            //   onPressed: () {},
+            //   style: TextButton.styleFrom(
+            //     foregroundColor: appColors.brandBackground,
+            //   ),
+            //   child: const Text('Voir plus'),
+            // ),
           ],
         ),
         if (anime.isNotEmpty) ...[
@@ -254,9 +268,10 @@ class _SeriesSection extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
+              // padding: const EdgeInsets.symmetric(horizontal: 0),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Text(
-                'Mes séries',
+                'Mes favoris',
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
@@ -326,7 +341,7 @@ class _SeriesCoverCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(4),
         child: Stack(
           fit: StackFit.expand,
           children: [

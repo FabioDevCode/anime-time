@@ -25,6 +25,10 @@ class FavoriteSeriesAccessor extends DatabaseAccessor<AppDatabase>
     )..where((t) => t.seriesId.equals(seriesId))).watchSingleOrNull();
   }
 
+  Stream<int> watchCount() {
+    return select(favoriteSeries).watch().map((rows) => rows.length);
+  }
+
   /// Retourne toutes les séries avec la coverImage de leur dernière saison.
   Stream<List<(FavoriteSery, String?)>> watchAllWithCover() {
     final query = select(favoriteSeries).join([

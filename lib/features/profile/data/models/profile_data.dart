@@ -18,6 +18,7 @@ class ProfileData {
   const ProfileData({
     required this.statistics,
     required this.favorites,
+    required this.releasing,
     required this.upcoming,
   });
 
@@ -25,6 +26,9 @@ class ProfileData {
 
   /// Favoris actuellement diffusés ou terminés.
   final List<AnimeMedia> favorites;
+
+  /// Favoris en cours de diffusion uniquement.
+  final List<AnimeMedia> releasing;
 
   /// Favoris dont la diffusion n'a pas encore commencé.
   final List<AnimeMedia> upcoming;

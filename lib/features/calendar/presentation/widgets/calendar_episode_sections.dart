@@ -10,7 +10,7 @@ class CalendarEpisodeSections extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 112),
+      padding: const EdgeInsets.fromLTRB(4, 8, 4, 112),
       itemCount: episodes.length,
       itemBuilder: (context, index) {
         final episode = episodes[index];

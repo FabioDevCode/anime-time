@@ -8,9 +8,8 @@ import 'package:anime_time/features/profile/data/profile_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
-  return ProfileRepository(
-    ref.watch(appDatabaseProvider).favoriteAnimeAccessor,
-  );
+  final db = ref.watch(appDatabaseProvider);
+  return ProfileRepository(db.favoriteAnimeAccessor, db.favoriteSeriesAccessor);
 });
 
 /// Flux unique pour le profil, alimenté uniquement par la base Drift locale.
