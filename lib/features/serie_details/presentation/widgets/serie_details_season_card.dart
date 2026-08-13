@@ -40,7 +40,7 @@ class _SerieDetailsSeasonCardState
           InkWell(
             onTap: _toggle,
             child: Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(8),
               child: _SeasonHeader(
                 season: widget.season,
                 isExpanded: _isExpanded,
@@ -129,7 +129,7 @@ class _SeasonHeader extends StatelessWidget {
                   ),
           ),
         ),
-        const SizedBox(width: 14),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,15 +166,19 @@ class _SeasonHeader extends StatelessWidget {
               ),
               if (progress != null) ...[
                 const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    backgroundColor: colorScheme.surfaceContainerHighest,
-                    color: isComplete
-                        ? _progressColorComplete
-                        : _progressColorPartial,
-                    minHeight: 5,
+                FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: 0.5, // 60% de la largeur disponible
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: colorScheme.surfaceContainerHighest,
+                      color: isComplete
+                          ? _progressColorComplete
+                          : _progressColorPartial,
+                      minHeight: 6,
+                    ),
                   ),
                 ),
               ],
@@ -206,7 +210,7 @@ class _SeasonEpisodeList extends StatelessWidget {
 
     if (episodeCount == null) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
         child: Text(
           "Nombre d'épisodes inconnu",
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -218,7 +222,7 @@ class _SeasonEpisodeList extends StatelessWidget {
 
     return Column(
       children: [
-        const Divider(height: 1),
+        const SizedBox(height: 8),
         for (var i = 1; i <= episodeCount; i++)
           SerieDetailsEpisodeListItem(
             seasonNumber: seasonNumber,
@@ -227,7 +231,7 @@ class _SeasonEpisodeList extends StatelessWidget {
             isWatched: i <= watched,
             onTap: () => onEpisodePressed(i),
           ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
       ],
     );
   }
@@ -258,14 +262,14 @@ class SerieDetailsEpisodeListItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Row(
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: SizedBox(
-                width: 40,
-                height: 60,
+                width: 56,
+                height: 40,
                 child: coverImage == null
                     ? ColoredBox(color: colorScheme.surfaceContainerHighest)
                     : Image.network(

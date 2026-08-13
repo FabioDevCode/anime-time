@@ -137,8 +137,8 @@ class SerieDetailsBanner extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 34),
                           child: Text(
-                            series.displayTitleRomaji ??
-                                series.displayTitleEnglish ??
+                            series.displayTitleEnglish ??
+                                series.displayTitleRomaji ??
                                 series.displayTitleNative ??
                                 'Titre indisponible',
                             maxLines: 7,

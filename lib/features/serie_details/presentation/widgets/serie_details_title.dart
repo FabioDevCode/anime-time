@@ -13,7 +13,8 @@ class SerieDetailsTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final english = series.displayTitleEnglish;
+    // final english = series.displayTitleEnglish;
+    final romanji = series.displayTitleRomaji;
     final native = series.displayTitleNative;
     final secondaryTitleStyle = theme.textTheme.bodyMedium?.copyWith(
       color: theme.colorScheme.onSurfaceVariant,
@@ -22,15 +23,15 @@ class SerieDetailsTitle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (english != null)
+        if (romanji != null)
           Text(
-            english,
+            romanji,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: secondaryTitleStyle,
           ),
-        if (native != null && native != english) ...[
-          if (english != null) const SizedBox(height: 4),
+        if (native != null && native != romanji) ...[
+          if (romanji != null) const SizedBox(height: 4),
           Text(native, style: secondaryTitleStyle),
         ],
         if (graphqlInfo?.status.badgeData case final badge?) ...[

@@ -135,8 +135,8 @@ class AnimeDetailProfileBanner extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 34),
                           child: Text(
-                            anime.titleRomaji ??
-                                anime.titleEnglish ??
+                            anime.titleEnglish ??
+                                anime.titleRomaji ??
                                 anime.titleNative ??
                                 'Titre indisponible',
                             maxLines: 7,

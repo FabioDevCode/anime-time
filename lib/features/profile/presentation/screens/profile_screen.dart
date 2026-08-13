@@ -334,8 +334,8 @@ class _SeriesCoverCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final title =
-        series.displayTitleRomaji ??
         series.displayTitleEnglish ??
+        series.displayTitleRomaji ??
         series.displayTitleNative;
 
     return GestureDetector(

@@ -11,7 +11,8 @@ class AnimeDetailProfileTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final english = anime.titleEnglish;
+    // final english = anime.titleEnglish;
+    final romanji = anime.titleRomaji;
     final native = anime.titleNative;
     final secondaryTitleStyle = theme.textTheme.bodyMedium?.copyWith(
       color: theme.colorScheme.onSurfaceVariant,
@@ -20,15 +21,15 @@ class AnimeDetailProfileTitle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (english != null)
+        if (romanji != null)
           Text(
-            english,
+            romanji,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: secondaryTitleStyle,
           ),
-        if (native != null && native != english) ...[
-          if (english != null) const SizedBox(height: 4),
+        if (native != null && native != romanji) ...[
+          if (romanji != null) const SizedBox(height: 4),
           Text(native, style: secondaryTitleStyle),
         ],
         if (anime.status.badgeData case final badge?) ...[
