@@ -41,11 +41,11 @@ class _ProfileContent extends StatelessWidget {
       children: [
         _StatisticsRow(statistics: data.statistics),
         const SizedBox(height: 24),
-        const _SeriesSection(),
-        const SizedBox(height: 12),
-        _ProfileSection(title: 'En cours', anime: data.releasing),
+        _ReleasingSection(series: data.releasing),
         const SizedBox(height: 24),
         _ProfileSection(title: 'À venir', anime: data.upcoming),
+        const SizedBox(height: 24),
+        const _SeriesSection(),
       ],
     );
   }
@@ -183,13 +183,6 @@ class _ProfileSection extends StatelessWidget {
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
-            // TextButton(
-            //   onPressed: () {},
-            //   style: TextButton.styleFrom(
-            //     foregroundColor: appColors.brandBackground,
-            //   ),
-            //   child: const Text('Voir plus'),
-            // ),
           ],
         ),
         if (anime.isNotEmpty) ...[
@@ -250,6 +243,36 @@ class _ProfileLoadError extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ),
+    );
+  }
+}
+
+class _ReleasingSection extends StatelessWidget {
+  const _ReleasingSection({required this.series});
+
+  final List<SeriesMedia> series;
+
+  @override
+  Widget build(BuildContext context) {
+    if (series.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'En cours',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        _SeriesCarousel(series: series),
+      ],
     );
   }
 }

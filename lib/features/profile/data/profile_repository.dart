@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:anime_time/common/models/anime_media.dart';
+import 'package:anime_time/common/models/series_media.dart';
 import 'package:anime_time/core/database/database.dart';
 import 'package:anime_time/features/profile/data/models/profile_data.dart';
 
@@ -23,11 +24,11 @@ class ProfileRepository {
     final controller = StreamController<ProfileData>();
 
     List<FavoriteAnimeData>? latestAnime;
-    int? latestSeriesCount;
+    List<(FavoriteSery, String?)>? latestSeriesRows;
 
     void tryEmit() {
-      if (latestAnime != null && latestSeriesCount != null) {
-        controller.add(_toProfileData(latestAnime!, latestSeriesCount!));
+      if (latestAnime != null && latestSeriesRows != null) {
+        controller.add(_toProfileData(latestAnime!, latestSeriesRows!));
       }
     }
 
@@ -35,8 +36,10 @@ class ProfileRepository {
       latestAnime = records;
       tryEmit();
     }, onError: controller.addError);
-    final seriesSub = _favoriteSeriesAccessor.watchCount().listen((count) {
-      latestSeriesCount = count;
+    final seriesSub = _favoriteSeriesAccessor.watchAllWithCover().listen((
+      rows,
+    ) {
+      latestSeriesRows = rows;
       tryEmit();
     }, onError: controller.addError);
 
@@ -48,19 +51,41 @@ class ProfileRepository {
     return controller.stream;
   }
 
-  ProfileData _toProfileData(List<FavoriteAnimeData> records, int seriesCount) {
+  ProfileData _toProfileData(
+    List<FavoriteAnimeData> records,
+    List<(FavoriteSery, String?)> seriesRows,
+  ) {
+    final seriesMap = {
+      for (final row in seriesRows)
+        row.$1.seriesId: SeriesMedia(
+          seriesId: row.$1.seriesId,
+          displayTitleRomaji: row.$1.displayTitleRomaji,
+          displayTitleEnglish: row.$1.displayTitleEnglish,
+          displayTitleNative: row.$1.displayTitleNative,
+          latestAnimeId: row.$1.latestAnimeId,
+          coverImage: row.$2,
+        ),
+    };
+
     var releasing = 0;
     var upcoming = 0;
     final favorites = <AnimeMedia>[];
-    final releasingAnime = <AnimeMedia>[];
+    final releasingSeries = <SeriesMedia>[];
+    final seenSeriesIds = <int>{};
     final upcomingAnime = <AnimeMedia>[];
 
     for (final record in records) {
       switch (record.status) {
         case _releasingStatus:
           releasing += 1;
-          releasingAnime.add(_toAnimeMedia(record));
           favorites.add(_toAnimeMedia(record));
+          final seriesId = record.seriesId;
+          // une seule jaquette par série, même si plusieurs saisons sont RELEASING
+          if (seriesId != null &&
+              seenSeriesIds.add(seriesId) &&
+              seriesMap.containsKey(seriesId)) {
+            releasingSeries.add(seriesMap[seriesId]!);
+          }
         case _finishedStatus:
           favorites.add(_toAnimeMedia(record));
         case _upcomingStatus:
@@ -71,12 +96,12 @@ class ProfileRepository {
 
     return ProfileData(
       statistics: ProfileStatistics(
-        totalFavorites: seriesCount,
+        totalFavorites: seriesRows.length,
         releasing: releasing,
         upcoming: upcoming,
       ),
       favorites: List.unmodifiable(favorites),
-      releasing: List.unmodifiable(releasingAnime),
+      releasing: List.unmodifiable(releasingSeries),
       upcoming: List.unmodifiable(upcomingAnime),
     );
   }

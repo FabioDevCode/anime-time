@@ -1,4 +1,5 @@
 import 'package:anime_time/common/models/anime_media.dart';
+import 'package:anime_time/common/models/series_media.dart';
 
 /// Comptages affichés en tête de la page profil.
 class ProfileStatistics {
@@ -27,8 +28,8 @@ class ProfileData {
   /// Favoris actuellement diffusés ou terminés.
   final List<AnimeMedia> favorites;
 
-  /// Favoris en cours de diffusion uniquement.
-  final List<AnimeMedia> releasing;
+  /// Séries avec au moins une saison en cours, dédoublonnées par seriesId.
+  final List<SeriesMedia> releasing;
 
   /// Favoris dont la diffusion n'a pas encore commencé.
   final List<AnimeMedia> upcoming;

@@ -262,7 +262,7 @@ class SerieDetailsEpisodeListItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.fromLTRB(8, 6, 16, 6),
         child: Row(
           children: [
             ClipRRect(

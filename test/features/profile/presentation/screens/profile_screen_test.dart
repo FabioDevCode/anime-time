@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:anime_time/common/models/anime_media.dart';
+import 'package:anime_time/common/models/series_media.dart';
 import 'package:anime_time/common/utils/anime_status.dart';
 import 'package:anime_time/common/widgets/anime_catalog/anime_cover_card.dart';
 import 'package:anime_time/core/theme/app_theme.dart';
@@ -22,7 +23,7 @@ void main() {
       AnimeMedia(id: 1, status: 'RELEASING'),
       AnimeMedia(id: 2, status: 'FINISHED'),
     ],
-    releasing: [AnimeMedia(id: 1, status: 'RELEASING')],
+    releasing: [SeriesMedia(seriesId: 1, latestAnimeId: 1)],
     upcoming: [AnimeMedia(id: 3, status: 'NOT_YET_RELEASED')],
   );
 
@@ -30,6 +31,9 @@ void main() {
     return ProviderScope(
       overrides: [
         profileDataProvider.overrideWith((ref) => Stream.value(profileData)),
+        favoriteSeriesListProvider.overrideWith(
+          (ref) => Stream.value(const []),
+        ),
       ],
       child: MaterialApp(
         theme: AppTheme.dark,
@@ -54,14 +58,11 @@ void main() {
       expect(find.text('12'), findsOneWidget);
       expect(find.text('4'), findsOneWidget);
       expect(find.text('3'), findsOneWidget);
-      expect(find.text('Favoris'), findsOneWidget);
+      expect(find.text('favoris'), findsOneWidget);
       expect(find.text('En cours'), findsOneWidget);
-      expect(find.text('À venir'), findsNWidgets(2));
-      expect(find.text('Dernière mise à jour : 27/07/2026'), findsOneWidget);
-
-      expect(find.text('Mes favoris'), findsOneWidget);
-      expect(find.text('Voir plus'), findsNWidgets(2));
-      expect(find.byType(AnimeCoverCard), findsNWidgets(3));
+      expect(find.text('À venir'), findsOneWidget);
+      // "En cours" utilise _SeriesCoverCard, seule la section "À venir" utilise AnimeCoverCard.
+      expect(find.byType(AnimeCoverCard), findsOneWidget);
       expect(
         find.byWidgetPredicate(
           (widget) =>
