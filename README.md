@@ -1,8 +1,10 @@
-  <img src="assets/icon/icon.png" alt="Puna Logo" width="150" />
+<img src="assets/icon/icon.png" alt="Anime Time Logo" width="150" />
 
 # Anime Time
 
-Application mobile pour traquer les animes.
+Application mobile pour traquer ses animes.
+
+<img src="ressources/anime-time-showcase.png" alt="Capture d'écran Anime Time" />
 
 ## Licence
 
