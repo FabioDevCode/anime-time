@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:anime_time/common/catalog/providers/catalog_view_mode.dart';
+import 'package:anime_time/core/theme/app_colors_extension.dart';
 
 /// Hauteur totale de la barre d'actions (boutons + padding vertical).
 /// Utilisée par [CatalogActionBar] et par le [padding] supérieur du GridView
@@ -24,6 +25,8 @@ class CatalogActionBar extends StatelessWidget {
     this.horizontalPadding = 16,
     this.showSearch = true,
     this.showFilter = true,
+    this.isFilterActive = false,
+    this.onFilter,
   });
 
   final CatalogViewMode viewMode;
@@ -31,6 +34,8 @@ class CatalogActionBar extends StatelessWidget {
   final double horizontalPadding;
   final bool showSearch;
   final bool showFilter;
+  final bool isFilterActive;
+  final VoidCallback? onFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +71,8 @@ class CatalogActionBar extends StatelessWidget {
                   if (showFilter)
                     SquareIconButton(
                       icon: Icons.filter_list_outlined,
-                      onTap: () {},
+                      isActive: isFilterActive,
+                      onTap: onFilter,
                     ),
                   if (showSearch || showFilter) const SizedBox(width: 8),
                   if (!showSearch && !showFilter) const Spacer(),
@@ -129,24 +135,39 @@ class SearchButton extends StatelessWidget {
 
 /// Bouton carré à icône unique, cohérent avec le style de [SearchButton].
 class SquareIconButton extends StatelessWidget {
-  const SquareIconButton({super.key, required this.icon, this.onTap});
+  const SquareIconButton({
+    super.key,
+    required this.icon,
+    this.onTap,
+    this.isActive = false,
+  });
 
   final IconData icon;
   final VoidCallback? onTap;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final appColors = context.appColors;
 
     return Material(
-      color: colorScheme.surfaceContainer,
+      color: isActive
+          ? appColors.brandBackground
+          : colorScheme.surfaceContainer,
       borderRadius: BorderRadius.circular(40),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(40),
         child: SizedBox.square(
           dimension: 48,
-          child: Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
+          child: Icon(
+            icon,
+            size: 20,
+            color: isActive
+                ? appColors.onBrandBackground
+                : colorScheme.onSurfaceVariant,
+          ),
         ),
       ),
     );

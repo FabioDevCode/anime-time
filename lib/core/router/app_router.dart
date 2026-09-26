@@ -6,6 +6,7 @@ import 'package:anime_time/features/anime_detail/routes/anime_detail_route.dart'
 import 'package:anime_time/features/anime_detail_profile/routes/anime_detail_profile_route.dart';
 import 'package:anime_time/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:anime_time/features/discover/presentation/screens/discover_screen.dart';
+import 'package:anime_time/features/discover/routes/discover_filters_route.dart';
 import 'package:anime_time/features/profile/presentation/screens/profile_screen.dart';
 import 'package:anime_time/features/serie_details/routes/serie_details_route.dart';
 import 'package:anime_time/features/soon/presentation/views/soon_view.dart';
@@ -33,6 +34,10 @@ final appRouter = GoRouter(
             ),
           )
           .toList(),
+    ),
+    GoRoute(
+      path: DiscoverFiltersRoute.path,
+      pageBuilder: (context, state) => DiscoverFiltersRoute.buildPage(state),
     ),
     GoRoute(
       path: AnimeDetailRoute.path,

@@ -21,6 +21,8 @@ class PaginatedAnimeCatalogScreen extends ConsumerStatefulWidget {
     required this.viewModeProvider,
     this.showSearch = true,
     this.showFilter = true,
+    this.isFilterActive = false,
+    this.onFilter,
   });
 
   final NotifierProvider<
@@ -32,6 +34,8 @@ class PaginatedAnimeCatalogScreen extends ConsumerStatefulWidget {
   viewModeProvider;
   final bool showSearch;
   final bool showFilter;
+  final bool isFilterActive;
+  final VoidCallback? onFilter;
 
   @override
   ConsumerState<PaginatedAnimeCatalogScreen> createState() =>
@@ -146,6 +150,8 @@ class _PaginatedAnimeCatalogScreenState
               horizontalPadding: _horizontalPadding,
               showSearch: widget.showSearch,
               showFilter: widget.showFilter,
+              isFilterActive: widget.isFilterActive,
+              onFilter: widget.onFilter,
             ),
           ),
         ],
