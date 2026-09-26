@@ -5,7 +5,7 @@
 /// identité stable.
 enum AppTab {
   discover(path: '/discover', routeName: 'discover'),
-  soon(path: '/soon', routeName: 'soon'),
+  watching(path: '/watching', routeName: 'watching'),
   calendar(path: '/calendar', routeName: 'calendar'),
   profile(path: '/profile', routeName: 'profile');
 

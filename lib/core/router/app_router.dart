@@ -9,7 +9,7 @@ import 'package:anime_time/features/discover/presentation/screens/discover_scree
 import 'package:anime_time/features/discover/routes/discover_filters_route.dart';
 import 'package:anime_time/features/profile/presentation/screens/profile_screen.dart';
 import 'package:anime_time/features/serie_details/routes/serie_details_route.dart';
-import 'package:anime_time/features/soon/presentation/views/soon_view.dart';
+import 'package:anime_time/features/watching/presentation/screens/watching_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -56,7 +56,7 @@ final appRouter = GoRouter(
 
 Widget _buildTabScreen(AppTab tab) => switch (tab) {
   AppTab.discover => const DiscoverScreen(),
-  AppTab.soon => const SoonView(),
+  AppTab.watching => const WatchingScreen(),
   AppTab.calendar => const CalendarScreen(),
   AppTab.profile => const ProfileScreen(),
 };

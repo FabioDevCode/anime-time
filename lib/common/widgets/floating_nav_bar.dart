@@ -20,10 +20,10 @@ class FloatingNavBar extends StatelessWidget {
       label: 'Découvrir',
     ),
     _NavItem(
-      tab: AppTab.soon,
-      icon: Icons.hourglass_top_rounded,
-      activeIcon: Icons.hourglass_top_rounded,
-      label: 'Bientôt',
+      tab: AppTab.watching,
+      icon: Icons.play_circle_outline_rounded,
+      activeIcon: Icons.play_circle_outline_rounded,
+      label: 'Je regarde',
     ),
     _NavItem(
       tab: AppTab.calendar,
