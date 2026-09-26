@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:anime_time/core/theme/app_colors_extension.dart';
 import 'package:anime_time/features/discover/providers/discover_filter.dart';
 
 class DiscoverFiltersScreen extends ConsumerWidget {
@@ -63,6 +64,32 @@ class DiscoverFiltersScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: FilledButton(
+                  onPressed: () {
+                    ref
+                        .read(discoverActiveFilterProvider.notifier)
+                        .select(DiscoverFilter.none);
+                    context.pop();
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHigh,
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    shape: const StadiumBorder(),
+                  ),
+                  child: const Text('Réinitialiser'),
+                ),
+              ),
+              const SizedBox(height: 8),
             ],
           ),
         ),
@@ -86,11 +113,21 @@ class _FilterOptionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = context.appColors;
+    final defaultLabelColor = Theme.of(context).colorScheme.onSurfaceVariant;
     return FilterChip(
       selected: isSelected,
       showCheckmark: false,
-      avatar: Icon(icon, size: 16),
+      selectedColor: appColors.brandBackground,
+      avatar: Icon(
+        icon,
+        size: 16,
+        color: isSelected ? appColors.onBrandBackground : defaultLabelColor,
+      ),
       label: Text(label),
+      labelStyle: TextStyle(
+        color: isSelected ? appColors.onBrandBackground : defaultLabelColor,
+      ),
       onSelected: (_) => onTap(),
     );
   }
