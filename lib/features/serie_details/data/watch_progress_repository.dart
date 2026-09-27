@@ -16,4 +16,7 @@ class WatchProgressRepository {
         : episodeNumber;
     await _accessor.updateLastEpisodeWatched(animeId, newValue);
   }
+
+  Future<void> setLastEpisodeWatched(int animeId, int value) =>
+      _accessor.updateLastEpisodeWatched(animeId, value);
 }

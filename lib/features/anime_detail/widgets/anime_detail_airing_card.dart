@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:anime_time/features/anime_detail/data/models/anime_detail.dart';
+import 'package:anime_time/common/models/next_airing_episode.dart';
 
 class AnimeDetailAiringCard extends StatelessWidget {
   const AnimeDetailAiringCard({super.key, required this.nextEpisode});

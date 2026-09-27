@@ -15,6 +15,10 @@ final serieDetailsQuery = gql(r'''
       season
       seasonYear
       averageScore
+      nextAiringEpisode {
+        episode
+        airingAt
+      }
     }
   }
 ''');

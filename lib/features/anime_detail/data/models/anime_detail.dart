@@ -1,3 +1,5 @@
+import 'package:anime_time/common/models/next_airing_episode.dart';
+
 class AnimeDetail {
   const AnimeDetail({
     required this.id,
@@ -62,20 +64,6 @@ class AnimeDetail {
       nextAiringEpisode: nextAiringEpisode == null
           ? null
           : NextAiringEpisode.fromJson(nextAiringEpisode),
-    );
-  }
-}
-
-class NextAiringEpisode {
-  const NextAiringEpisode({required this.episode, required this.airingAt});
-
-  final int? episode;
-  final int? airingAt;
-
-  factory NextAiringEpisode.fromJson(Map<String, dynamic> json) {
-    return NextAiringEpisode(
-      episode: json['episode'] as int?,
-      airingAt: json['airingAt'] as int?,
     );
   }
 }

@@ -19,6 +19,16 @@ class _SerieDetailsSeasonCardState
 
   void _toggle() => setState(() => _isExpanded = !_isExpanded);
 
+  Future<void> _handleSeasonToggle() async {
+    final season = widget.season;
+    final episodes = season.episodes;
+    if (episodes == null) return;
+    final isComplete = season.lastEpisodeWatched >= episodes;
+    await ref
+        .read(watchProgressRepositoryProvider)
+        .setLastEpisodeWatched(season.animeId, isComplete ? 0 : episodes);
+  }
+
   Future<void> _handleEpisodePressed(int episodeNumber) async {
     await ref
         .read(watchProgressRepositoryProvider)
@@ -44,6 +54,9 @@ class _SerieDetailsSeasonCardState
               child: _SeasonHeader(
                 season: widget.season,
                 isExpanded: _isExpanded,
+                onSeasonToggle: widget.season.episodes != null
+                    ? _handleSeasonToggle
+                    : null,
               ),
             ),
           ),
@@ -64,10 +77,15 @@ class _SerieDetailsSeasonCardState
 }
 
 class _SeasonHeader extends StatelessWidget {
-  const _SeasonHeader({required this.season, required this.isExpanded});
+  const _SeasonHeader({
+    required this.season,
+    required this.isExpanded,
+    required this.onSeasonToggle,
+  });
 
   final FavoriteAnimeData season;
   final bool isExpanded;
+  final VoidCallback? onSeasonToggle;
 
   static const _progressColorComplete = Color(0xFF66BB6A);
   static const _progressColorPartial = Color(0xFFFFB74D);
@@ -157,7 +175,7 @@ class _SeasonHeader extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Text(
                 counterText,
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -165,7 +183,7 @@ class _SeasonHeader extends StatelessWidget {
                 ),
               ),
               if (progress != null) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 FractionallySizedBox(
                   alignment: Alignment.centerLeft,
                   widthFactor: 0.5, // 60% de la largeur disponible
@@ -185,6 +203,15 @@ class _SeasonHeader extends StatelessWidget {
             ],
           ),
         ),
+        if (onSeasonToggle != null)
+          GestureDetector(
+            onTap: onSeasonToggle,
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+              child: _SeasonCheckbox(isComplete: isComplete),
+            ),
+          ),
       ],
     );
   }
@@ -336,6 +363,37 @@ class _EpisodeCheckbox extends StatelessWidget {
         ),
       ),
       child: isWatched
+          ? const Icon(Icons.check_rounded, color: Colors.white, size: 14)
+          : null,
+    );
+  }
+}
+
+class _SeasonCheckbox extends StatelessWidget {
+  const _SeasonCheckbox({required this.isComplete});
+
+  final bool isComplete;
+
+  static const _colorChecked = Color(0xFF66BB6A);
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isComplete ? _colorChecked : Colors.transparent,
+        border: Border.all(
+          color: isComplete ? _colorChecked : colorScheme.outline,
+          width: 2,
+        ),
+      ),
+      child: isComplete
           ? const Icon(Icons.check_rounded, color: Colors.white, size: 14)
           : null,
     );

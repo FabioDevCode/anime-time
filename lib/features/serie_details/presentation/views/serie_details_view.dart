@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:anime_time/core/database/database.dart';
 import 'package:anime_time/features/serie_details/providers/serie_details_providers.dart';
+import 'package:anime_time/features/anime_detail/widgets/anime_detail_airing_card.dart';
 import 'package:anime_time/features/serie_details/presentation/widgets/serie_details_banner.dart';
 import 'package:anime_time/features/serie_details/presentation/widgets/serie_details_metadata.dart';
 import 'package:anime_time/features/serie_details/presentation/widgets/serie_details_season_card.dart';
@@ -79,12 +80,18 @@ class _SerieDetailsContent extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SerieDetailsTitle(series: serie, graphqlInfo: graphqlInfo),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     if (graphqlInfo != null) ...[
                       SerieDetailsMetadata(graphqlInfo: graphqlInfo),
                       if (graphqlInfo.genres.isNotEmpty) ...[
-                        const SizedBox(height: 8),
                         _GenresChips(genres: graphqlInfo.genres),
+                      ],
+                      if (graphqlInfo.status == 'RELEASING' &&
+                          graphqlInfo.nextAiringEpisode != null) ...[
+                        const SizedBox(height: 8),
+                        AnimeDetailAiringCard(
+                          nextEpisode: graphqlInfo.nextAiringEpisode!,
+                        ),
                       ],
                       const SizedBox(height: 16),
                       SerieDetailsSynopsisCard(
@@ -92,7 +99,7 @@ class _SerieDetailsContent extends ConsumerWidget {
                       ),
                     ],
                     if (seasons.isNotEmpty) ...[
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
                       _SeasonsSection(seasons: seasons),
                     ],
                   ],
