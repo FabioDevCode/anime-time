@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:anime_time/common/widgets/app_shell.dart';
+import 'package:anime_time/features/splash/presentation/screens/splash_screen.dart';
 import 'package:anime_time/core/router/app_tab.dart';
 import 'package:anime_time/features/anime_detail/routes/anime_detail_route.dart';
 import 'package:anime_time/features/anime_detail_profile/routes/anime_detail_profile_route.dart';
@@ -16,8 +17,9 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   debugLogDiagnostics: true,
-  initialLocation: AppTab.discover.path,
+  initialLocation: '/',
   routes: [
+    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
           AppShell(navigationShell: navigationShell),
