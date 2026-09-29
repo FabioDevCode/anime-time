@@ -18,7 +18,7 @@ class WatchingScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -28,7 +28,7 @@ class WatchingScreen extends ConsumerWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 4),
+                // const SizedBox(height: 4),
                 Text(
                   'Les séries avec des épisodes à voir',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(

@@ -43,28 +43,25 @@ class _ProfileContent extends StatelessWidget {
         data.statistics.totalFavorites == 0;
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(8, 24, 8, 96),
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Profil',
-                style: textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Profil',
+              style: textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w800,
               ),
-              const SizedBox(height: 4),
-              Text(
-                'Vos favoris et vos statistiques anime',
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
+            ),
+            // const SizedBox(height: 4),
+            Text(
+              'Vos favoris et vos statistiques anime',
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
         _StatisticsRow(statistics: data.statistics),
