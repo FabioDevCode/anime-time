@@ -13,16 +13,32 @@ import 'package:anime_time/features/serie_details/routes/serie_details_route.dar
 import 'package:anime_time/features/watching/presentation/screens/watching_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
+const _splashTransitionDuration = Duration(milliseconds: 500);
 
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   debugLogDiagnostics: true,
   initialLocation: '/',
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+    GoRoute(
+      path: '/',
+      pageBuilder: (context, state) => CustomTransitionPage<void>(
+        key: state.pageKey,
+        child: const SplashScreen(),
+        transitionDuration: _splashTransitionDuration,
+        reverseTransitionDuration: _splashTransitionDuration,
+        transitionsBuilder: _fadeTransition,
+      ),
+    ),
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) =>
-          AppShell(navigationShell: navigationShell),
+      pageBuilder: (context, state, navigationShell) =>
+          CustomTransitionPage<void>(
+            key: state.pageKey,
+            child: AppShell(navigationShell: navigationShell),
+            transitionDuration: _splashTransitionDuration,
+            reverseTransitionDuration: _splashTransitionDuration,
+            transitionsBuilder: _fadeTransition,
+          ),
       branches: AppTab.values
           .map(
             (tab) => StatefulShellBranch(
@@ -55,6 +71,16 @@ final appRouter = GoRouter(
     ),
   ],
 );
+
+Widget _fadeTransition(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  final fadeAnimation = CurveTween(curve: Curves.easeInOut).animate(animation);
+  return FadeTransition(opacity: fadeAnimation, child: child);
+}
 
 Widget _buildTabScreen(AppTab tab) => switch (tab) {
   AppTab.discover => const DiscoverScreen(),
