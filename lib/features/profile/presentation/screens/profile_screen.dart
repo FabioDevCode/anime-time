@@ -1,7 +1,7 @@
 import 'package:anime_time/common/models/anime_media.dart';
 import 'package:anime_time/common/models/series_media.dart';
-import 'package:anime_time/common/utils/anime_status.dart';
 import 'package:anime_time/common/widgets/anime_catalog/anime_cover_card.dart';
+import 'package:anime_time/core/theme/app_colors_extension.dart';
 import 'package:anime_time/features/anime_detail_profile/routes/anime_detail_profile_route.dart';
 import 'package:anime_time/features/profile/data/models/profile_data.dart';
 import 'package:anime_time/features/profile/providers/profile_providers.dart';
@@ -9,7 +9,6 @@ import 'package:anime_time/features/serie_details/routes/serie_details_route.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:anime_time/core/theme/app_colors_extension.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -36,16 +35,49 @@ class _ProfileContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isEmpty =
+        data.releasing.isEmpty &&
+        data.upcoming.isEmpty &&
+        data.statistics.totalFavorites == 0;
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(8, 24, 8, 96),
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Profil',
+                style: textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Vos favoris et vos statistiques anime',
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
         _StatisticsRow(statistics: data.statistics),
-        const SizedBox(height: 24),
-        _ReleasingSection(series: data.releasing),
-        const SizedBox(height: 24),
-        _ProfileSection(title: 'À venir', anime: data.upcoming),
-        const SizedBox(height: 24),
-        const _SeriesSection(),
+        const SizedBox(height: 16),
+        if (isEmpty)
+          const _ProfileEmpty()
+        else ...[
+          const _SeriesSection(),
+          const SizedBox(height: 24),
+          _ReleasingSection(series: data.releasing),
+          const SizedBox(height: 24),
+          _ProfileSection(title: 'À venir', anime: data.upcoming),
+        ],
       ],
     );
   }
@@ -65,7 +97,6 @@ class _StatisticsRow extends StatelessWidget {
             value: statistics.totalFavorites,
             suplabel: 'Anime',
             label: 'favoris',
-            status: 'FINISHED',
           ),
         ),
         const SizedBox(width: 10),
@@ -74,7 +105,6 @@ class _StatisticsRow extends StatelessWidget {
             value: statistics.releasing,
             suplabel: 'Saison',
             label: 'en cours',
-            status: 'RELEASING',
           ),
         ),
         const SizedBox(width: 10),
@@ -83,7 +113,6 @@ class _StatisticsRow extends StatelessWidget {
             value: statistics.upcoming,
             suplabel: 'Saison',
             label: 'à venir',
-            status: 'NOT_YET_RELEASED',
           ),
         ),
       ],
@@ -96,22 +125,20 @@ class _StatisticCard extends StatelessWidget {
     required this.value,
     required this.suplabel,
     required this.label,
-    required this.status,
   });
 
   final int value;
   final String suplabel;
   final String label;
-  final String status;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final statusBadge = status.badgeData!;
+    final appColors = context.appColors;
 
     return Card(
       margin: EdgeInsets.zero,
-      color: statusBadge.backgroundColor,
+      color: appColors.brandBackground,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: SizedBox(
@@ -128,18 +155,17 @@ class _StatisticCard extends StatelessWidget {
                     value.toString(),
                     style: textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: statusBadge.textColor,
+                      color: appColors.onBrandBackground,
                     ),
                   ),
                 ),
               ),
-              // const SizedBox(height: 6),
               Text(
                 suplabel,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: textTheme.labelMedium?.copyWith(
-                  color: statusBadge.textColor,
+                  color: appColors.onBrandBackground,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -148,7 +174,7 @@ class _StatisticCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: textTheme.labelMedium?.copyWith(
-                  color: statusBadge.textColor,
+                  color: appColors.onBrandBackground,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -168,7 +194,7 @@ class _ProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final appColors = context.appColors;
+    if (anime.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,10 +211,8 @@ class _ProfileSection extends StatelessWidget {
             ),
           ],
         ),
-        if (anime.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          _AnimeCarousel(anime: anime),
-        ],
+        const SizedBox(height: 4),
+        _AnimeCarousel(anime: anime),
       ],
     );
   }
@@ -241,6 +265,46 @@ class _ProfileLoadError extends StatelessWidget {
           'Impossible de charger le profil',
           style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileEmpty extends StatelessWidget {
+  const _ProfileEmpty();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.person_outline_rounded,
+              size: 64,
+              color: colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Aucun favori pour le moment.',
+              style: textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Ajoutez des anime à vos favoris pour commencer à suivre votre activité.',
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
