@@ -20,6 +20,7 @@ class WatchingSeriesCard extends StatelessWidget {
       onTap: onTap,
       child: Card(
         clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
             SizedBox(
