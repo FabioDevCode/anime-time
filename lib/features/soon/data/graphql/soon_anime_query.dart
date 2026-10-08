@@ -2,7 +2,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 // Source canonique : soon_anime.graphql (même dossier).
 final soonAnimeQuery = gql(r'''
-  query SoonAnime($page: Int!, $perPage: Int!, $seasonYear: Int) {
+  query SoonAnime($page: Int!, $perPage: Int!, $seasonYear: Int, $search: String) {
     Page(page: $page, perPage: $perPage) {
       pageInfo {
         currentPage
@@ -15,6 +15,7 @@ final soonAnimeQuery = gql(r'''
         seasonYear: $seasonYear
         sort: START_DATE
         isAdult: false
+        search: $search
       ) {
         id
         status

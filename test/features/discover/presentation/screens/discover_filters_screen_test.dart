@@ -269,5 +269,218 @@ void main() {
         expect(find.text('Appliquer'), findsNothing);
       },
     );
+
+    // ── Tests recherche ──────────────────────────────────────────────────────
+
+    testWidgets(
+      'Recherche saisie + Appliquer → applied.searchQuery = texte trimé',
+      (tester) async {
+        final (:router, :container, :widget) = setupRouterSubject();
+        addTearDown(container.dispose);
+
+        await tester.pumpWidget(widget);
+        router.push('/filters');
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextField), 'One Piece');
+        await tester.tap(find.text('Appliquer'));
+        await tester.pumpAndSettle();
+
+        expect(
+          container.read(discoverAppliedFilterProvider).searchQuery,
+          'One Piece',
+        );
+        expect(
+          container.read(discoverAppliedFilterProvider).filter,
+          DiscoverFilter.none,
+        );
+      },
+    );
+
+    testWidgets(
+      'Recherche + Prochainement + Appliquer → applied contient les deux',
+      (tester) async {
+        final (:router, :container, :widget) = setupRouterSubject();
+        addTearDown(container.dispose);
+
+        await tester.pumpWidget(widget);
+        router.push('/filters');
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Prochainement'));
+        await tester.pump();
+        await tester.enterText(find.byType(TextField), 'Naruto');
+        await tester.tap(find.text('Appliquer'));
+        await tester.pumpAndSettle();
+
+        final applied = container.read(discoverAppliedFilterProvider);
+        expect(applied.searchQuery, 'Naruto');
+        expect(applied.filter, DiscoverFilter.soon);
+      },
+    );
+
+    testWidgets(
+      'Recherche vide ("") + Appliquer → applied.searchQuery est null',
+      (tester) async {
+        final (:router, :container, :widget) = setupRouterSubject();
+        addTearDown(container.dispose);
+
+        await tester.pumpWidget(widget);
+        router.push('/filters');
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Appliquer'));
+        await tester.pumpAndSettle();
+
+        expect(container.read(discoverAppliedFilterProvider).searchQuery, isNull);
+      },
+    );
+
+    testWidgets(
+      'Recherche composée uniquement d\'espaces + Appliquer → applied.searchQuery est null',
+      (tester) async {
+        final (:router, :container, :widget) = setupRouterSubject();
+        addTearDown(container.dispose);
+
+        await tester.pumpWidget(widget);
+        router.push('/filters');
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextField), '   ');
+        await tester.tap(find.text('Appliquer'));
+        await tester.pumpAndSettle();
+
+        expect(container.read(discoverAppliedFilterProvider).searchQuery, isNull);
+      },
+    );
+
+    testWidgets(
+      'Trim : espaces avant/après supprimés avant application',
+      (tester) async {
+        final (:router, :container, :widget) = setupRouterSubject();
+        addTearDown(container.dispose);
+
+        await tester.pumpWidget(widget);
+        router.push('/filters');
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextField), '  One Piece  ');
+        await tester.tap(find.text('Appliquer'));
+        await tester.pumpAndSettle();
+
+        expect(
+          container.read(discoverAppliedFilterProvider).searchQuery,
+          'One Piece',
+        );
+      },
+    );
+
+    testWidgets(
+      'Saisie sans Appliquer → applied.searchQuery inchangé',
+      (tester) async {
+        DiscoverFilterCriteria? seen;
+
+        await tester.pumpWidget(
+          ProviderScope(
+            child: MaterialApp(
+              theme: AppTheme.dark,
+              home: Consumer(
+                builder: (context, ref, _) {
+                  seen = ref.watch(discoverAppliedFilterProvider);
+                  return const DiscoverFiltersScreen();
+                },
+              ),
+            ),
+          ),
+        );
+
+        await tester.enterText(find.byType(TextField), 'One Piece');
+        await tester.pump();
+
+        expect(seen?.searchQuery, isNull);
+      },
+    );
+
+    testWidgets(
+      "Réouverture : champ initialisé avec la recherche appliquée",
+      (tester) async {
+        await tester.pumpWidget(
+          buildSubject(
+            initial: const DiscoverFilterCriteria(searchQuery: 'One Piece'),
+          ),
+        );
+
+        final textField = tester.widget<TextField>(find.byType(TextField));
+        expect(textField.controller?.text, 'One Piece');
+      },
+    );
+
+    testWidgets(
+      'Réinitialiser efface le champ de recherche',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+
+        await tester.enterText(find.byType(TextField), 'One Piece');
+        await tester.pump();
+
+        await tester.tap(find.text('Réinitialiser'));
+        await tester.pump();
+
+        final textField = tester.widget<TextField>(find.byType(TextField));
+        expect(textField.controller?.text, isEmpty);
+        expect(find.text('Appliquer'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Réinitialiser avec recherche ne modifie pas applied',
+      (tester) async {
+        DiscoverFilterCriteria? seen;
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              discoverAppliedFilterProvider.overrideWith(
+                () => _FixedFilterNotifier(
+                  const DiscoverFilterCriteria(searchQuery: 'One Piece'),
+                ),
+              ),
+            ],
+            child: MaterialApp(
+              theme: AppTheme.dark,
+              home: Consumer(
+                builder: (context, ref, _) {
+                  seen = ref.watch(discoverAppliedFilterProvider);
+                  return const DiscoverFiltersScreen();
+                },
+              ),
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('Réinitialiser'));
+        await tester.pump();
+
+        expect(seen?.searchQuery, 'One Piece');
+      },
+    );
+
+    testWidgets(
+      'focusSearch: false → pas de FocusNode actif au démarrage',
+      (tester) async {
+        await tester.pumpWidget(
+          ProviderScope(
+            child: MaterialApp(
+              theme: AppTheme.dark,
+              home: const DiscoverFiltersScreen(focusSearch: false),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final textField = tester.widget<TextField>(find.byType(TextField));
+        expect(textField.focusNode?.hasFocus, isFalse);
+      },
+    );
   });
 }

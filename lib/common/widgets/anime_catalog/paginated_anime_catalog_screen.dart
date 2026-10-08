@@ -23,6 +23,8 @@ class PaginatedAnimeCatalogScreen extends ConsumerStatefulWidget {
     this.showFilter = true,
     this.isFilterActive = false,
     this.onFilter,
+    this.onSearch,
+    this.searchLabel,
   });
 
   final NotifierProvider<
@@ -36,6 +38,12 @@ class PaginatedAnimeCatalogScreen extends ConsumerStatefulWidget {
   final bool showFilter;
   final bool isFilterActive;
   final VoidCallback? onFilter;
+
+  /// Rappel déclenché lors du clic sur la barre de recherche.
+  final VoidCallback? onSearch;
+
+  /// Texte affiché dans la barre de recherche (recherche actuellement appliquée).
+  final String? searchLabel;
 
   @override
   ConsumerState<PaginatedAnimeCatalogScreen> createState() =>
@@ -115,6 +123,55 @@ class _PaginatedAnimeCatalogScreenState
       );
     }
 
+    if (state.items.isEmpty) {
+      final viewMode = ref.watch(widget.viewModeProvider);
+      return SafeArea(
+        bottom: false,
+        child: Stack(
+          children: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.search_off_rounded,
+                      size: 48,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Aucun résultat',
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: CatalogActionBar(
+                viewMode: viewMode,
+                onToggleViewMode: () =>
+                    ref.read(widget.viewModeProvider.notifier).toggle(),
+                horizontalPadding: _horizontalPadding,
+                showSearch: widget.showSearch,
+                showFilter: widget.showFilter,
+                isFilterActive: widget.isFilterActive,
+                onFilter: widget.onFilter,
+                onSearch: widget.onSearch,
+                searchLabel: widget.searchLabel,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     final viewMode = ref.watch(widget.viewModeProvider);
 
     return SafeArea(
@@ -152,6 +209,8 @@ class _PaginatedAnimeCatalogScreenState
               showFilter: widget.showFilter,
               isFilterActive: widget.isFilterActive,
               onFilter: widget.onFilter,
+              onSearch: widget.onSearch,
+              searchLabel: widget.searchLabel,
             ),
           ),
         ],
@@ -159,3 +218,4 @@ class _PaginatedAnimeCatalogScreenState
     );
   }
 }
+

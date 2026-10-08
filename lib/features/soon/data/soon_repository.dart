@@ -4,11 +4,17 @@ import 'package:anime_time/common/models/anime_media.dart';
 import 'package:anime_time/features/soon/data/graphql/soon_anime_query.dart';
 
 class SoonRepository implements AnimeCatalogRepository {
-  SoonRepository(this._client, {DateTime Function()? now})
+  SoonRepository(this._client, {DateTime Function()? now, this.searchQuery})
     : _now = now ?? DateTime.now;
 
   final GraphQLClient _client;
   final DateTime Function() _now;
+
+  /// Texte de recherche trimé. `null` = pas de recherche (stratégie an-par-an).
+  /// Non-null = mode recherche : pagination simple, `seasonYear` ignoré.
+  final String? searchQuery;
+
+  bool get _isSearchMode => searchQuery != null && searchQuery!.isNotEmpty;
 
   static const int _maxConsecutiveEmptyYears = 3;
 
@@ -24,6 +30,10 @@ class SoonRepository implements AnimeCatalogRepository {
     required int page,
     required int perPage,
   }) async {
+    if (_isSearchMode) {
+      return _fetchSearchPage(page: page, perPage: perPage);
+    }
+
     if (page == 1 || !_isInitialized) {
       _resetCursor();
     }
@@ -77,6 +87,46 @@ class SoonRepository implements AnimeCatalogRepository {
     );
   }
 
+  /// Pagination simple utilisée lorsqu'une recherche textuelle est active.
+  /// La stratégie an-par-an n'a pas de sens pour les résultats de recherche :
+  /// on effectue une requête directe sans contrainte d'année.
+  Future<AnimeCatalogPage> _fetchSearchPage({
+    required int page,
+    required int perPage,
+  }) async {
+    final result = await _client.query(
+      QueryOptions(
+        document: soonAnimeQuery,
+        variables: {
+          'page': page,
+          'perPage': perPage,
+          'seasonYear': null,
+          'search': searchQuery,
+        },
+        fetchPolicy: FetchPolicy.networkOnly,
+      ),
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception.toString());
+    }
+
+    final pageData = result.data?['Page'] as Map<String, dynamic>?;
+    if (pageData == null) throw Exception('Invalid response structure');
+
+    final pageInfo = pageData['pageInfo'] as Map<String, dynamic>? ?? {};
+    final mediaList = (pageData['media'] as List<dynamic>?) ?? [];
+
+    return AnimeCatalogPage(
+      items: mediaList
+          .whereType<Map<String, dynamic>>()
+          .map(AnimeMedia.fromJson)
+          .toList(),
+      currentPage: (pageInfo['currentPage'] as int?) ?? page,
+      hasNextPage: (pageInfo['hasNextPage'] as bool?) ?? false,
+    );
+  }
+
   void _resetCursor() {
     _seasonYear = _now().year;
     _apiPage = 1;
@@ -114,6 +164,7 @@ class SoonRepository implements AnimeCatalogRepository {
           'seasonYear': _phase == _SoonFetchPhase.knownYears
               ? _seasonYear
               : null,
+          'search': null,
         },
         fetchPolicy: FetchPolicy.networkOnly,
       ),

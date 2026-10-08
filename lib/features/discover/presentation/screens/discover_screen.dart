@@ -5,7 +5,6 @@ import 'package:anime_time/common/widgets/anime_catalog/paginated_anime_catalog_
 import 'package:anime_time/features/discover/providers/discover_filter.dart';
 import 'package:anime_time/features/discover/providers/discover_providers.dart';
 import 'package:anime_time/features/discover/routes/discover_filters_route.dart';
-import 'package:anime_time/features/soon/providers/soon_providers.dart';
 
 class DiscoverScreen extends ConsumerWidget {
   const DiscoverScreen({super.key});
@@ -14,9 +13,19 @@ class DiscoverScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appliedFilter = ref.watch(discoverAppliedFilterProvider);
 
+    // Invalide le provider de catalogue actif à chaque changement de critères
+    // pour forcer un rechargement avec les nouvelles données (recherche, filtre).
+    ref.listen(discoverAppliedFilterProvider, (_, next) {
+      final provider = switch (next.filter) {
+        DiscoverFilter.none => discoverNotifierProvider,
+        DiscoverFilter.soon => soonDiscoverNotifierProvider,
+      };
+      ref.invalidate(provider);
+    });
+
     final catalogProvider = switch (appliedFilter.filter) {
       DiscoverFilter.none => discoverNotifierProvider,
-      DiscoverFilter.soon => soonNotifierProvider,
+      DiscoverFilter.soon => soonDiscoverNotifierProvider,
     };
 
     return PaginatedAnimeCatalogScreen(
@@ -25,6 +34,11 @@ class DiscoverScreen extends ConsumerWidget {
       viewModeProvider: discoverViewModeProvider,
       isFilterActive: appliedFilter.hasActiveFilters,
       onFilter: () => context.push(DiscoverFiltersRoute.path),
+      onSearch: () => context.push(
+        DiscoverFiltersRoute.path,
+        extra: {'focusSearch': true},
+      ),
+      searchLabel: appliedFilter.searchQuery,
     );
   }
 }

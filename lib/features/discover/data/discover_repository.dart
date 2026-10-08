@@ -4,9 +4,12 @@ import 'package:anime_time/common/models/anime_media.dart';
 import 'package:anime_time/features/discover/data/graphql/recent_releasing_anime_query.dart';
 
 class DiscoverRepository implements AnimeCatalogRepository {
-  const DiscoverRepository(this._client);
+  const DiscoverRepository(this._client, {this.searchQuery});
 
   final GraphQLClient _client;
+
+  /// Texte de recherche trimé. `null` signifie « pas de filtre de recherche ».
+  final String? searchQuery;
 
   @override
   Future<AnimeCatalogPage> fetchPage({
@@ -19,7 +22,12 @@ class DiscoverRepository implements AnimeCatalogRepository {
     final result = await _client.query(
       QueryOptions(
         document: recentReleasingAnimeQuery,
-        variables: {'page': page, 'perPage': perPage, 'today': today},
+        variables: {
+          'page': page,
+          'perPage': perPage,
+          'today': today,
+          'search': searchQuery,
+        },
         fetchPolicy: FetchPolicy.networkOnly,
       ),
     );

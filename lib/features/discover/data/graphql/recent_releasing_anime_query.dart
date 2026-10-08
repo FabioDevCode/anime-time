@@ -4,7 +4,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 // Ce fichier expose le DocumentNode parsé pour utilisation dans le repository.
 // Pour un futur codegen (ferry / artemis), le .graphql est prêt à l'emploi.
 final recentReleasingAnimeQuery = gql(r'''
-  query RecentReleasingAnime($page: Int!, $perPage: Int!, $today: FuzzyDateInt!) {
+  query RecentReleasingAnime($page: Int!, $perPage: Int!, $today: FuzzyDateInt!, $search: String) {
     Page(page: $page, perPage: $perPage) {
       pageInfo {
         currentPage
@@ -17,6 +17,7 @@ final recentReleasingAnimeQuery = gql(r'''
         status_in: [RELEASING, FINISHED]
         isAdult: false
         format: TV
+        search: $search
       ) {
         id
         status

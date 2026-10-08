@@ -5,7 +5,12 @@ import 'package:anime_time/core/theme/app_colors_extension.dart';
 import 'package:anime_time/features/discover/providers/discover_filter.dart';
 
 class DiscoverFiltersScreen extends ConsumerStatefulWidget {
-  const DiscoverFiltersScreen({super.key});
+  const DiscoverFiltersScreen({super.key, this.focusSearch = false});
+
+  /// Lorsque `true`, le champ de recherche reçoit automatiquement le focus
+  /// après le premier rendu — utilisé quand l'utilisateur arrive depuis la
+  /// barre de recherche de Découvrir.
+  final bool focusSearch;
 
   @override
   ConsumerState<DiscoverFiltersScreen> createState() =>
@@ -14,11 +19,28 @@ class DiscoverFiltersScreen extends ConsumerStatefulWidget {
 
 class _DiscoverFiltersScreenState extends ConsumerState<DiscoverFiltersScreen> {
   late DiscoverFilterCriteria _draft;
+  late final TextEditingController _searchController;
+  late final FocusNode _searchFocusNode;
 
   @override
   void initState() {
     super.initState();
     _draft = ref.read(discoverAppliedFilterProvider);
+    _searchController = TextEditingController(text: _draft.searchQuery ?? '');
+    _searchFocusNode = FocusNode();
+
+    if (widget.focusSearch) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _searchFocusNode.requestFocus();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
   }
 
   void _toggleSoon() {
@@ -34,11 +56,17 @@ class _DiscoverFiltersScreenState extends ConsumerState<DiscoverFiltersScreen> {
   void _reset() {
     setState(() {
       _draft = const DiscoverFilterCriteria();
+      _searchController.clear();
     });
   }
 
   void _apply() {
-    ref.read(discoverAppliedFilterProvider.notifier).apply(_draft);
+    final raw = _searchController.text.trim();
+    final criteria = DiscoverFilterCriteria(
+      filter: _draft.filter,
+      searchQuery: raw.isEmpty ? null : raw,
+    );
+    ref.read(discoverAppliedFilterProvider.notifier).apply(criteria);
     context.pop();
   }
 
@@ -55,6 +83,10 @@ class _DiscoverFiltersScreenState extends ConsumerState<DiscoverFiltersScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                textInputAction: TextInputAction.search,
+                onSubmitted: (_) => _apply(),
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search_rounded),
                   hintText: 'Rechercher',
@@ -127,6 +159,7 @@ class _DiscoverFiltersScreenState extends ConsumerState<DiscoverFiltersScreen> {
                   child: const Text('Réinitialiser'),
                 ),
               ),
+              const SizedBox(height: 8),
             ],
           ),
         ),
@@ -169,3 +202,4 @@ class _FilterOptionChip extends StatelessWidget {
     );
   }
 }
+

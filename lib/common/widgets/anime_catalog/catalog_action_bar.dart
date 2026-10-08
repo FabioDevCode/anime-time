@@ -27,6 +27,8 @@ class CatalogActionBar extends StatelessWidget {
     this.showFilter = true,
     this.isFilterActive = false,
     this.onFilter,
+    this.onSearch,
+    this.searchLabel,
   });
 
   final CatalogViewMode viewMode;
@@ -36,6 +38,13 @@ class CatalogActionBar extends StatelessWidget {
   final bool showFilter;
   final bool isFilterActive;
   final VoidCallback? onFilter;
+
+  /// Rappel déclenché lors du clic sur la barre de recherche.
+  final VoidCallback? onSearch;
+
+  /// Texte affiché dans la barre de recherche lorsqu'une recherche est active.
+  /// Si `null`, affiche le placeholder « Rechercher ».
+  final String? searchLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +75,13 @@ class CatalogActionBar extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (showSearch) const Expanded(child: SearchButton()),
+                  if (showSearch)
+                    Expanded(
+                      child: SearchButton(
+                        onTap: onSearch,
+                        searchLabel: searchLabel,
+                      ),
+                    ),
                   if (showSearch && showFilter) const SizedBox(width: 8),
                   if (showFilter)
                     SquareIconButton(
@@ -95,13 +110,17 @@ class CatalogActionBar extends StatelessWidget {
 /// Bouton étendu imitant une barre de recherche.
 /// N'est qu'un bouton — aucun champ de saisie.
 class SearchButton extends StatelessWidget {
-  const SearchButton({super.key, this.onTap});
+  const SearchButton({super.key, this.onTap, this.searchLabel});
 
   final VoidCallback? onTap;
+
+  /// Si non-null, affiche ce texte à la place du placeholder.
+  final String? searchLabel;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final hasSearch = searchLabel != null && searchLabel!.isNotEmpty;
 
     return Material(
       color: colorScheme.surfaceContainer,
@@ -119,10 +138,13 @@ class SearchButton extends StatelessWidget {
                 color: colorScheme.onSurfaceVariant,
               ),
               const SizedBox(width: 10),
-              Text(
-                'Rechercher',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+              Expanded(
+                child: Text(
+                  hasSearch ? searchLabel! : 'Rechercher',
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],
@@ -173,3 +195,4 @@ class SquareIconButton extends StatelessWidget {
     );
   }
 }
+

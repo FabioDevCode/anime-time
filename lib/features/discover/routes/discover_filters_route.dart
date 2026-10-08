@@ -7,9 +7,12 @@ abstract final class DiscoverFiltersRoute {
   static const _transitionDuration = Duration(milliseconds: 250);
 
   static Page<void> buildPage(GoRouterState state) {
+    final extra = state.extra as Map<String, dynamic>?;
+    final focusSearch = extra?['focusSearch'] == true;
+
     return CustomTransitionPage<void>(
       key: state.pageKey,
-      child: const DiscoverFiltersScreen(),
+      child: DiscoverFiltersScreen(focusSearch: focusSearch),
       transitionDuration: _transitionDuration,
       reverseTransitionDuration: _transitionDuration,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

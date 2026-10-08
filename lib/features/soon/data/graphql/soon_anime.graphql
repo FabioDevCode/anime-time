@@ -1,4 +1,4 @@
-query SoonAnime($page: Int!, $perPage: Int!, $seasonYear: Int) {
+query SoonAnime($page: Int!, $perPage: Int!, $seasonYear: Int, $search: String) {
   Page(page: $page, perPage: $perPage) {
     pageInfo {
       currentPage
@@ -12,6 +12,7 @@ query SoonAnime($page: Int!, $perPage: Int!, $seasonYear: Int) {
       seasonYear: $seasonYear
       sort: START_DATE
       isAdult: false
+      search: $search
     ) {
       id
 
