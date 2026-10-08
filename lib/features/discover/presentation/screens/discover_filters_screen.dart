@@ -4,12 +4,46 @@ import 'package:go_router/go_router.dart';
 import 'package:anime_time/core/theme/app_colors_extension.dart';
 import 'package:anime_time/features/discover/providers/discover_filter.dart';
 
-class DiscoverFiltersScreen extends ConsumerWidget {
+class DiscoverFiltersScreen extends ConsumerStatefulWidget {
   const DiscoverFiltersScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final activeFilter = ref.watch(discoverActiveFilterProvider);
+  ConsumerState<DiscoverFiltersScreen> createState() =>
+      _DiscoverFiltersScreenState();
+}
+
+class _DiscoverFiltersScreenState extends ConsumerState<DiscoverFiltersScreen> {
+  late DiscoverFilterCriteria _draft;
+
+  @override
+  void initState() {
+    super.initState();
+    _draft = ref.read(discoverAppliedFilterProvider);
+  }
+
+  void _toggleSoon() {
+    setState(() {
+      _draft = _draft.copyWith(
+        filter: _draft.filter == DiscoverFilter.soon
+            ? DiscoverFilter.none
+            : DiscoverFilter.soon,
+      );
+    });
+  }
+
+  void _reset() {
+    setState(() {
+      _draft = const DiscoverFilterCriteria();
+    });
+  }
+
+  void _apply() {
+    ref.read(discoverAppliedFilterProvider.notifier).apply(_draft);
+    context.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -50,17 +84,8 @@ class DiscoverFiltersScreen extends ConsumerWidget {
                   _FilterOptionChip(
                     label: 'Prochainement',
                     icon: Icons.hourglass_top_rounded,
-                    isSelected: activeFilter == DiscoverFilter.soon,
-                    onTap: () {
-                      ref
-                          .read(discoverActiveFilterProvider.notifier)
-                          .select(
-                            activeFilter == DiscoverFilter.soon
-                                ? DiscoverFilter.none
-                                : DiscoverFilter.soon,
-                          );
-                      context.pop();
-                    },
+                    isSelected: _draft.filter == DiscoverFilter.soon,
+                    onTap: _toggleSoon,
                   ),
                 ],
               ),
@@ -69,12 +94,25 @@ class DiscoverFiltersScreen extends ConsumerWidget {
                 width: double.infinity,
                 height: 52,
                 child: FilledButton(
-                  onPressed: () {
-                    ref
-                        .read(discoverActiveFilterProvider.notifier)
-                        .select(DiscoverFilter.none);
-                    context.pop();
-                  },
+                  onPressed: _apply,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: context.appColors.brandBackground,
+                    foregroundColor: context.appColors.onBrandBackground,
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    shape: const StadiumBorder(),
+                  ),
+                  child: const Text('Appliquer'),
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: FilledButton(
+                  onPressed: _reset,
                   style: FilledButton.styleFrom(
                     backgroundColor: Theme.of(
                       context,
@@ -89,7 +127,6 @@ class DiscoverFiltersScreen extends ConsumerWidget {
                   child: const Text('Réinitialiser'),
                 ),
               ),
-              const SizedBox(height: 8),
             ],
           ),
         ),

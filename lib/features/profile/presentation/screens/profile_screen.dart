@@ -75,6 +75,7 @@ class _ProfileContent extends StatelessWidget {
           const SizedBox(height: 24),
           _ProfileSection(title: 'À venir', anime: data.upcoming),
         ],
+        const SizedBox(height: 108),
       ],
     );
   }

@@ -12,18 +12,18 @@ class DiscoverScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeFilter = ref.watch(discoverActiveFilterProvider);
+    final appliedFilter = ref.watch(discoverAppliedFilterProvider);
 
-    final catalogProvider = switch (activeFilter) {
+    final catalogProvider = switch (appliedFilter.filter) {
       DiscoverFilter.none => discoverNotifierProvider,
       DiscoverFilter.soon => soonNotifierProvider,
     };
 
     return PaginatedAnimeCatalogScreen(
-      key: ValueKey(activeFilter),
+      key: ValueKey(appliedFilter),
       catalogProvider: catalogProvider,
       viewModeProvider: discoverViewModeProvider,
-      isFilterActive: activeFilter != DiscoverFilter.none,
+      isFilterActive: appliedFilter.hasActiveFilters,
       onFilter: () => context.push(DiscoverFiltersRoute.path),
     );
   }
