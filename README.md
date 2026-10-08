@@ -2,9 +2,12 @@
 
 # Anime Time
 
-Application mobile pour traquer ses animes.
+Application mobile pour traquer ses animes, simple et sans surplus.
 
-<img src="ressources/anime-time-showcase.png" alt="Capture d'écran Anime Time" />
+## Captures d'écran
+
+<img src="ressources/anime-time-showcase.png" alt="Captures d'écran Anime Time" />
+<img src="ressources/anime-time-showcase-2.png" alt="Captures d'écran Anime Time" />
 
 ## Licence
 
